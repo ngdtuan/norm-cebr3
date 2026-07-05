@@ -1,19 +1,14 @@
 {
-  "name": "NORM CeBr3 - Định lượng hoạt độ NORM",
+  "name": "NORM CeBr3 Mobile",
   "short_name": "NORM CeBr3",
-  "description": "Công cụ tính hoạt độ NORM bằng phương pháp so sánh trực tiếp với chuẩn IAEA RGU-1/RGTh-1/RGK-1 trên hệ CeBr3.",
-  "start_url": "./index.html",
+  "description": "Công cụ tính hoạt độ NORM bằng phương pháp so sánh trực tiếp với chuẩn IAEA trên đầu dò CeBr3.",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "portrait-primary",
   "background_color": "#f1f5f9",
   "theme_color": "#0e7490",
-  "lang": "vi",
-  "categories": [
-    "science",
-    "utilities",
-    "productivity"
-  ],
+  "lang": "vi-VN",
   "icons": [
     {
       "src": "icons/icon-192.png",
