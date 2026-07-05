@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<!-- NORM CeBr3 Mobile PWA for GitHub Pages -->
+<html lang="vi"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NORM · Định lượng so sánh (CeBr₃)</title>
+
+<meta name="theme-color" content="#0e7490">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="NORM CeBr3">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+  :root{
+    --teal:#0e7490; --cyan:#0891b2; --indigo:#4f46e5; --indigo2:#4338ca;
+    --amber:#b45309; --green:#059669; --violet:#7c3aed; --rose:#be123c;
+    --ink:#0f172a; --muted:#1e293b; --line:#e2e8f0; --bg:#f1f5f9;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-size:14px;font-weight:450;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+  header{background:linear-gradient(110deg,#0e7490 0%,#1d4ed8 55%,#6d28d9 100%);color:#fff}
+  header .wrap{max-width:1120px;margin:0 auto;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+  header h1{font-size:17px;margin:0;font-weight:700;letter-spacing:-.01em}
+  header .sub{font-size:12px;color:#e0f2fe;font-weight:500;margin-top:3px;font-family:ui-monospace,Menlo,monospace}
+  header .pill{font-size:11px;font-weight:500;background:rgba(255,255,255,.18);border-radius:999px;padding:4px 12px}
+  main{max-width:1120px;margin:0 auto;padding:22px 20px;display:grid;grid-template-columns:330px 1fr;gap:22px}
+  @media(max-width:820px){main{grid-template-columns:1fr}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:16px}
+  .card.t{border-top-width:3px}
+  .head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .head i{width:6px;height:16px;border-radius:2px;display:inline-block}
+  .head span{font-size:12px;font-weight:650;text-transform:uppercase;letter-spacing:.04em}
+  .head .unit{text-transform:none;letter-spacing:0;font-weight:500;color:#475569;margin-left:4px}
+  label.row{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;margin:6px 0}
+  label.row>span{color:var(--muted);white-space:nowrap;font-weight:500}
+  input,select,textarea{font-family:inherit;font-size:12px;border:1px solid #cbd5e1;border-radius:6px;padding:4px 7px;background:#fff;color:var(--ink)}
+  input::placeholder,textarea::placeholder{color:#64748b;opacity:1}
+  input[type=number]{text-align:right;font-family:ui-monospace,Menlo,monospace;width:96px}
+  .grow{flex:1;min-width:0}
+  select.grow,input.grow{width:100%}
+  .dz{margin-top:8px;border:2px dashed #cbd5e1;border-radius:9px;padding:22px 12px;text-align:center;cursor:pointer;background:#f8fafc;transition:.15s}
+  .dz:hover{border-color:#22d3ee;background:#ecfeff}
+  .dz.drag{border-color:#06b6d4;background:#cffafe}
+  .dz .ar{font-size:30px;line-height:1;color:#475569}
+  .dz p{margin:6px 0 0;font-size:13px;font-weight:500;color:#334155}
+  .dz small{color:#334155;font-weight:500;font-size:11px}
+  .btnrow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+  button{font-family:inherit;border:none;border-radius:6px;cursor:pointer;font-size:12px;padding:7px 8px;transition:.15s}
+  button:active{transform:translateY(1px)}
+  .b-soft{background:#eef2ff;color:#4338ca;border:1px solid #c7d2fe}
+  .b-soft:hover{background:#e0e7ff}
+  .b-cyan{background:#ecfeff;color:#0e7490;border:1px solid #a5f3fc}
+  .b-cyan:hover{background:#cffafe}
+  .b-emer{background:#ecfdf5;color:#047857;border:1px solid #a7f3d0}
+  .b-emer:hover{background:#d1fae5}
+  .b-fill{color:#fff;font-weight:600;width:100%;padding:9px 8px}
+  .status{font-size:11px;margin-top:8px;min-height:14px}
+  .status.ok{color:#0e7490}.status.err{color:#e11d48}
+  .blk{display:flex;align-items:center;justify-content:space-between;font-size:12px;margin:5px 0}
+  .blk .dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
+  .blk .cnt{font-family:ui-monospace,Menlo,monospace;color:#fff;border-radius:5px;padding:1px 7px;font-size:11px}
+  .note-i{font-size:11px;font-weight:500;color:#475569;padding-top:6px;border-top:1px solid #f1f5f9;margin-top:4px}
+  /* phải */
+  .summ{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  @media(max-width:560px){.summ{grid-template-columns:repeat(2,1fr)}}
+  .sc{border:1px solid var(--line);border-radius:9px;overflow:hidden;background:#fff}
+  .sc .t{padding:6px 10px;color:#fff;font-size:12px;font-weight:600}
+  .sc .b{padding:10px}
+  .sc .v{font-family:ui-monospace,Menlo,monospace;font-size:22px;line-height:1}
+  .sc .u{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);margin-top:3px}
+  .sc .n{font-size:10px;margin-top:3px}
+  .adq{border-left:4px solid;border-radius:0 7px 7px 0;padding:9px 11px;font-size:12px;margin:16px 0}
+  .adq.warn{border-color:#f59e0b;background:#fffbeb}
+  .adq.ok{border-color:#10b981;background:#ecfdf5}
+  .adq b.warn{color:#b45309}.adq b.ok{color:#047857}
+  .adq span{color:var(--muted)}
+  .tbl{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:16px}
+  .tbl .cap{padding:8px 12px;color:#fff;font-size:12px;font-weight:600}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  thead th{background:#f1f5f9;color:#334155;font-weight:600;text-align:right;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+  thead th.l{text-align:left}
+  tbody td{padding:5px 8px;border-top:1px solid #f1f5f9;text-align:right;font-family:ui-monospace,Menlo,monospace}
+  tbody td.l{text-align:left;font-family:inherit}
+  tbody tr:hover{background:#f8fafc}
+  .scroll{overflow-x:auto}
+  .dbhead{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding:8px 12px;color:#fff;background:linear-gradient(90deg,#4338ca,#6d28d9)}
+  .dbhead .acts{display:flex;gap:6px;flex-wrap:wrap}
+  .dbhead button{background:rgba(255,255,255,.2);color:#fff;font-size:11px;padding:4px 9px}
+  .dbhead button:hover{background:rgba(255,255,255,.32)}
+  .dbhead button.del{background:rgba(244,63,94,.8)}
+  .dbhead button.del:hover{background:#f43f5e}
+  .dbhead input.search{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:11px;padding:4px 8px;border-radius:6px;width:150px}
+  .dbhead input.search::placeholder{color:#e0e7ff}
+  tbody tr.click{cursor:pointer}
+  /* modal xem chi tiết bản ghi */
+  .overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);display:flex;align-items:flex-start;justify-content:center;padding:30px 16px;overflow:auto;z-index:50}
+  .modal{background:#fff;border-radius:12px;max-width:760px;width:100%;box-shadow:0 10px 40px rgba(0,0,0,.25)}
+  .modal .mh{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;color:#fff;border-radius:12px 12px 0 0;background:linear-gradient(90deg,#4338ca,#6d28d9)}
+  .modal .mh b{font-size:14px}
+  .modal .mh .x{background:rgba(255,255,255,.2);border-radius:6px;color:#fff;font-size:13px;padding:3px 9px}
+  .modal .mb{padding:16px 18px}
+  .modal h3{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#334155;border-left:3px solid #4f46e5;padding-left:8px;margin:14px 0 7px}
+  .modal h3:first-child{margin-top:0}
+  .kv{display:grid;grid-template-columns:1fr 1fr;gap:4px 24px;font-size:12px}
+  .kv span{color:#475569;display:inline-block;min-width:96px}
+  .modal .mf{display:flex;gap:8px;justify-content:flex-end;padding:12px 18px;border-top:1px solid #f1f5f9}
+  .empty{padding:18px;text-align:center;color:#334155;font-weight:500;font-size:12px}
+  .filebar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:7px 12px;background:#eef2ff;border-bottom:1px solid #e0e7ff;font-size:12px}
+  .filebar .fb-on{color:#047857;font-weight:500}.filebar .fb-warn{color:#b45309;font-weight:500}.filebar .fb-muted{color:#334155;font-weight:500}
+  .filebar .fb-btn{background:#4f46e5;color:#fff;border:none;border-radius:6px;font-size:11px;padding:4px 10px;cursor:pointer}
+  .filebar .fb-btn:hover{background:#4338ca}
+  .xdel{color:#cbd5e1;cursor:pointer;background:none;padding:0 4px}
+  .xdel:hover{color:#f43f5e}
+  .foot{font-size:11px;color:#334155;font-weight:500;line-height:1.6}
+  .hidden{display:none}
+  /* ---- thanh cấu hình ---- */
+  .cfgbar{max-width:1120px;margin:0 auto;padding:0 20px}
+  .cfg-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 0}
+  .cfg-title{display:inline-flex;align-items:center;gap:6px;background:#0f172a;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;line-height:1;padding:9px 14px;cursor:pointer}
+  .cfg-title:hover{background:#1e293b}
+  .cfg-guide{display:inline-flex;align-items:center;gap:6px;background:#fff;color:#0e7490;border:1px solid #a5f3fc;border-radius:8px;font-size:12.5px;font-weight:600;line-height:1;padding:9px 13px;cursor:pointer}
+  .cfg-guide:hover{background:#ecfeff;border-color:#67e8f9}
+  .cfg-stat{font-size:12px;color:#334155;line-height:1.2}
+  .cfg-stat.on{color:#047857;font-weight:600}
+  .cfg-panel{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px 16px;margin-bottom:10px}
+  .cfg-help{font-size:12px;font-weight:500;color:#334155;margin:0 0 12px;line-height:1.6}
+  .cfg-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:760px){.cfg-grid{grid-template-columns:1fr}}
+  .cfg-box{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px}
+  .cfg-bh{font-size:12.5px;font-weight:700;color:#0f172a;margin-bottom:6px}
+  .cfg-std{margin-top:14px}
+  .cfg-toggle{display:flex;align-items:flex-start;gap:9px;font-size:12px;color:#334155;line-height:1.5;cursor:pointer}
+  .cfg-toggle input{width:16px;height:16px;margin-top:1px;flex:0 0 auto;cursor:pointer}
+  .cfg-toggle b{color:#0f172a}
+  .cfg-peaks{display:flex;flex-wrap:wrap;gap:6px}
+  .cfg-peaks label{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:#334155;background:#fff;border:1px solid #e2e8f0;border-radius:7px;padding:4px 9px;cursor:pointer}
+  .cfg-peaks label:hover{border-color:#cbd5e1;background:#f8fafc}
+  .cfg-peaks input{width:14px;height:14px;cursor:pointer}
+  .cfg-peaks label.on{border-color:#a5f3fc;background:#ecfeff;color:#0e7490;font-weight:600}
+  .cfg-stdtbl{width:100%;border-collapse:collapse;font-size:12px;max-width:520px}
+  .cfg-stdtbl th{text-align:left;color:#475569;font-weight:600;padding:4px 8px;border-bottom:1px solid #e2e8f0}
+  .cfg-stdtbl th:nth-child(2),.cfg-stdtbl th:nth-child(3){text-align:right}
+  .cfg-stdtbl td{padding:4px 8px;border-bottom:1px solid #f1f5f9}
+  .cfg-stdtbl td:first-child{font-weight:600;color:#0f766e}
+  .cfg-stdtbl input{width:96px;text-align:right;border:1px solid #cbd5e1;border-radius:6px;padding:4px 7px;font-size:12px}
+  .cfg-stdtbl td:nth-child(2),.cfg-stdtbl td:nth-child(3){text-align:right}
+  .cfg-note{font-size:11.5px;font-weight:500;color:#334155;line-height:1.55;margin:0 0 8px}
+  .cfg-files{margin:0 0 8px;padding-left:18px;font-size:11px;font-weight:500;color:#334155;line-height:1.7}
+  .cfg-files code{background:#eef2ff;color:#4338ca;border-radius:4px;padding:0 5px;font-weight:600}
+  .cfg-files i{color:#475569}
+  .cfg-btns{display:flex;gap:6px;flex-wrap:wrap}
+  .cfg-b{border:1px solid #cbd5e1;background:#fff;color:#334155;border-radius:7px;font-size:11.5px;padding:6px 11px;cursor:pointer}
+  .cfg-b:hover{background:#f1f5f9}
+  .cfg-b.primary{background:#4f46e5;border-color:#4f46e5;color:#fff}
+  .cfg-b.primary:hover{background:#4338ca}
+  .cfg-b.danger{color:#e11d48;border-color:#fecdd3}
+  .cfg-b.danger:hover{background:#fff1f2}
+  .cfg-mini{font-size:10.5px;font-weight:500;color:#475569;margin:8px 0 0;line-height:1.5}
+  .cfg-dirbar{font-size:11.5px;font-weight:500;margin:0 0 8px;color:#475569}
+  .cfg-dirbar .on{color:#047857;font-weight:600}.cfg-dirbar .warn{color:#b45309;font-weight:600}
+  .cfg-msg{font-size:12px;margin-top:10px;min-height:0}
+  .cfg-msg.ok{color:#047857}.cfg-msg.err{color:#dc2626}
+
+
+/* ===== NORM Mobile PWA v2: Android-first responsive layer ===== */
+html{width:100%;max-width:100%;overflow-x:hidden;scroll-behavior:smooth}
+body{width:100%;max-width:100%;overflow-x:hidden;padding-bottom:calc(74px + env(safe-area-inset-bottom,0px))}
+img,svg,canvas,video{max-width:100%;height:auto}
+button,input,select,textarea{max-width:100%;touch-action:manipulation}
+.scroll{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tbl{max-width:100%}
+table{min-width:720px}
+#dbBody table{min-width:760px}
+#peakTable{min-width:820px}
+
+.mobile-install{display:none;position:sticky;top:0;z-index:60;margin:0;background:#ecfeff;border-bottom:1px solid #a5f3fc;color:#0e7490;padding:10px 14px;font-size:13px;font-weight:650;box-shadow:0 2px 10px rgba(15,23,42,.08)}
+.mobile-install.show{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mobile-install button{background:#0e7490;color:white;border-radius:999px;padding:7px 12px;font-weight:700}
+.mobile-bottom-nav{display:none}
+
+@media(max-width:820px){
+  :root{--mobile-pad:12px}
+  body{font-size:14px;background:#f8fafc}
+  header .wrap{padding:12px var(--mobile-pad);display:block}
+  header h1{font-size:16px;line-height:1.28}
+  header .sub{font-size:11px;white-space:normal;line-height:1.35;margin-top:4px}
+  header .pill{display:none}
+  .cfgbar{padding:0 var(--mobile-pad)}
+  .cfg-row{gap:8px;padding:10px 0;align-items:stretch}
+  .cfg-title,.cfg-guide{flex:1 1 auto;justify-content:center;min-height:40px}
+  .cfg-stat{flex-basis:100%;font-size:11px;line-height:1.45;background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:8px}
+  .cfg-panel{padding:10px;margin-bottom:12px;border-radius:12px}
+  .cfg-grid{grid-template-columns:1fr;gap:10px}
+  .cfg-box{padding:10px;border-radius:10px}
+  .cfg-stdtbl{display:block;overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch}
+  .cfg-stdtbl input{width:90px}
+  main{display:flex!important;flex-direction:column;gap:0;padding:10px var(--mobile-pad) 24px;max-width:100%;width:100%}
+  main>section{width:100%;min-width:0}
+  .card{padding:12px;border-radius:14px;margin-bottom:12px;box-shadow:0 1px 6px rgba(15,23,42,.04)}
+  .head{margin:10px 0 8px}.head span{font-size:12px}
+  label.row{display:grid;grid-template-columns:1fr;gap:4px;align-items:stretch;margin:9px 0;font-size:13px}
+  label.row>span{white-space:normal;color:#334155}
+  input[type=number],input.grow,select.grow,textarea.grow{width:100%;min-height:38px;font-size:16px;text-align:left}
+  input,select,textarea{font-size:16px;min-height:38px;border-radius:9px;padding:8px 10px}
+  .dz{padding:22px 12px;border-radius:14px;background:#fff;min-height:122px;display:flex;flex-direction:column;justify-content:center}
+  .dz .ar{font-size:34px}.dz p{font-size:14px;line-height:1.4}.dz small{font-size:12px;line-height:1.4}
+  .btnrow{grid-template-columns:1fr}.b-fill,button{min-height:40px;border-radius:10px;font-size:13px}
+  .summ{grid-template-columns:1fr 1fr;gap:9px}
+  .sc{border-radius:13px}.sc .t{padding:7px 9px}.sc .b{padding:10px 9px}.sc .v{font-size:20px;word-break:break-word}.sc .u{font-size:10.5px}.sc .n{font-size:10px;line-height:1.35}
+  .adq{font-size:12px;line-height:1.5;border-radius:0 10px 10px 0;margin:12px 0;padding:9px 10px}
+  .tbl{border-radius:14px;margin-bottom:14px;box-shadow:0 1px 6px rgba(15,23,42,.04)}
+  .tbl .cap{font-size:12px;padding:9px 10px}
+  thead th{font-size:11px;padding:7px 8px} tbody td{font-size:11.5px;padding:7px 8px;line-height:1.35}
+  .dbhead{padding:10px;align-items:stretch}.dbhead>span{flex-basis:100%}.dbhead .acts{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%}.dbhead input.search{grid-column:1/-1;width:100%;min-height:36px}.dbhead button{min-height:34px}
+  .filebar{font-size:11.5px;line-height:1.4}.foot{font-size:11px;line-height:1.6;padding:0 2px 8px}
+  .overlay{padding:14px 10px 86px;align-items:flex-start}.modal{border-radius:14px}.modal .mb{padding:13px}.kv{grid-template-columns:1fr;gap:6px}.modal .mf{justify-content:stretch}.modal .mf button{width:100%!important}
+  .mobile-bottom-nav{display:grid;position:fixed;left:0;right:0;bottom:0;z-index:80;grid-template-columns:repeat(5,1fr);gap:0;background:rgba(255,255,255,.98);border-top:1px solid #e2e8f0;box-shadow:0 -4px 20px rgba(15,23,42,.12);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));backdrop-filter:blur(10px)}
+  .mobile-bottom-nav button{background:transparent;color:#334155;border-radius:12px;min-height:46px;padding:4px 2px;font-size:10.5px;font-weight:650;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+  .mobile-bottom-nav button .ico{font-size:18px;line-height:1}.mobile-bottom-nav button.active{background:#ecfeff;color:#0e7490}
+}
+
+@media(max-width:390px){
+  .summ{grid-template-columns:1fr}
+  .dbhead .acts{grid-template-columns:1fr}
+  header h1{font-size:15px}
+}
+
+@media(prefers-color-scheme:dark){
+  :root{--ink:#e5e7eb;--muted:#cbd5e1;--line:#334155;--bg:#0f172a}
+  body{background:#0f172a;color:#e5e7eb}.card,.sc,.tbl,.cfg-panel,.cfg-box,.filebar,.modal{background:#111827;border-color:#334155}.cfg-stat{background:#111827;border-color:#334155}.dz{background:#111827;border-color:#475569}.dz:hover{background:#164e63}.head .unit,.note-i,.foot,.cfg-note,.cfg-mini,.cfg-help,.cfg-dirbar,label.row>span{color:#cbd5e1} input,select,textarea{background:#0b1220;color:#e5e7eb;border-color:#475569} thead th{background:#1e293b;color:#e5e7eb;border-color:#334155} tbody td{border-color:#1f2937} tbody tr:hover{background:#1e293b}.mobile-bottom-nav{background:rgba(17,24,39,.98);border-color:#334155}.mobile-install{background:#164e63;color:#ecfeff;border-color:#155e75}
+}
+
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div>
+      <h1>NORM · Định lượng theo phương pháp so sánh</h1>
+      <div class="sub">CeBr₃ 1.5″ · CF → A_tổng → C_mẫu · bản độc lập, chạy ngoại tuyến</div>
+    </div>
+    <span class="pill">Kéo–thả report bGamma · lưu CSDL trên máy</span>
+  </div>
+</header>
+<div id="mobileInstall" class="mobile-install"><span>📱 Có thể cài NORM CeBr₃ như app Android.</span><button id="btnInstallPwa" type="button">Cài app</button></div>
+
+
+<!-- ============ THANH CẤU HÌNH (chuẩn + phông tự nạp) ============ -->
+<div id="cfgBar" class="cfgbar">
+  <div class="cfg-row">
+    <button id="btnCfgToggle" class="cfg-title">⚙ Cấu hình chuẩn &amp; phông <span id="cfgChevron">▸</span></button>
+    <button id="btnGuide" class="cfg-guide" title="Mở quy trình đo hoạt độ mẫu NORM (PDF trong thư mục cấu hình)">📖 Hướng dẫn (quy trình)</button>
+    <span id="cfgStatus" class="cfg-stat on">✓ Đã nạp cấu hình: RGU · RGTh · RGK · PHONG — chỉ cần thả file MẪU.</span>
+  </div>
+  <div id="cfgPanel" class="cfg-panel hidden">
+    <p class="cfg-help">Nạp một lần các khối <b>RGU-1 · RGTh-1 · RGK-1 · PHÔNG</b> rồi <b>Lưu cấu hình</b>. Từ lần sau mở công cụ, các khối này tự nạp — mỗi mẫu chỉ cần thả file MẪU.</p>
+
+    <div class="cfg-grid">
+      <!-- Cách A: liên kết thư mục -->
+      <div class="cfg-box">
+        <div class="cfg-bh">📁 Tự nạp từ thư mục trên máy</div>
+        <p class="cfg-note">Chọn một thư mục chứa 4 file report bGamma (.html) của chuẩn &amp; phông. Đặt tên file để công cụ tự nhận:</p>
+        <ul class="cfg-files">
+          <li><code>RGU</code> · ví dụ <i>RGU-1.html, rgu_report.html</i></li>
+          <li><code>RGTh</code> · ví dụ <i>RGTh-1.html, rgth.html</i></li>
+          <li><code>RGK</code> · ví dụ <i>RGK-1.html, rgk.html</i></li>
+          <li><code>PHONG</code> / <code>PHÔNG</code> / <code>BG</code> · ví dụ <i>phong.html</i></li>
+        </ul>
+        <div id="cfgDirBar" class="cfg-dirbar"><span class="on">📁 Đã liên kết thư mục: <b>Software Tools</b></span></div>
+        <div class="cfg-btns">
+          <button id="btnCfgDirLink" class="cfg-b primary">Liên kết thư mục…</button>
+          <button id="btnCfgDirReload" class="cfg-b">↻ Nạp lại từ thư mục</button>
+        </div>
+        <p class="cfg-mini">Hỗ trợ Chrome/Edge. Công cụ chỉ <b>đọc</b> các file này, không sửa. Đặt thêm file <b>PDF quy trình</b> (tên chứa <i>SOP/quy trình/NORM</i>) vào cùng thư mục để nút <b>📖 Hướng dẫn</b> mở được.</p>
+      </div>
+
+      <!-- Cách B: snapshot dữ liệu đang nạp -->
+      <div class="cfg-box">
+        <div class="cfg-bh">💾 Lưu cấu hình từ dữ liệu đang nạp</div>
+        <p class="cfg-note">Sau khi đã nạp RGU/RGTh/RGK/PHÔNG (thả file hoặc dán tay) và chỉnh bảng <i>Chuẩn IAEA</i>, bấm Lưu để ghi nhớ ngay vào máy (kèm tham số chuẩn).</p>
+        <div class="cfg-btns">
+          <button id="btnCfgSaveSnap" class="cfg-b primary">Lưu cấu hình hiện tại</button>
+          <button id="btnCfgApply" class="cfg-b">Nạp lại cấu hình đã lưu</button>
+          <button id="btnCfgClear" class="cfg-b danger">Xoá cấu hình</button>
+        </div>
+        <div class="cfg-btns" style="margin-top:6px">
+          <button id="btnCfgExport" class="cfg-b">⬇ Xuất cấu hình (.json)</button>
+          <button id="btnCfgImport" class="cfg-b">⬆ Nạp cấu hình (.json)</button>
+          <input id="cfgImportFile" type="file" accept=".json" class="hidden">
+        </div>
+        <p class="cfg-mini">Cấu hình lưu trong trình duyệt (IndexedDB) — tự áp dụng mỗi khi mở công cụ.</p>
+      </div>
+    </div>
+
+    <!-- Tùy chọn xử lý phổ (lưu cùng cấu hình) -->
+    <div class="cfg-box cfg-std">
+      <div class="cfg-bh">⚙ Tùy chọn xử lý phổ</div>
+      <label class="cfg-toggle">
+        <input id="optSubBg" type="checkbox" checked="">
+        <span><b>Trừ phông</b> — lấy diện tích đỉnh chuẩn &amp; mẫu trừ đi diện tích cùng vạch ở phổ PHÔNG trước khi tính.</span>
+      </label>
+      <p class="cfg-note" id="optSubBgNote" style="margin-top:6px">Đang BẬT: chỉ trừ phông ở các đỉnh chọn bên dưới (mặc định K-40 &amp; Tl-208). Tắt nếu phổ đã trừ phông sẵn hoặc muốn dùng diện tích thô.</p>
+      <div id="bgPeaksWrap" style="margin-top: 10px; opacity: 1;">
+        <div class="cfg-note" style="margin-bottom:5px"><b>Chỉ trừ phông ở các đỉnh có phông thực:</b> (mặc định K-40 &amp; Tl-208)</div>
+        <div id="bgPeaksList" class="cfg-peaks"><label class=""><input type="checkbox" data-e="295.22">Pb-214 (295.22)</label><label class=""><input type="checkbox" data-e="1120.29">Bi-214 (1120.29)</label><label class=""><input type="checkbox" data-e="1764.49">Bi-214 (1764.49)</label><label class=""><input type="checkbox" data-e="911.2">Ac-228 (911.2)</label><label class="on"><input type="checkbox" data-e="2614.51" checked="">Tl-208 (2614.51)</label><label class="on"><input type="checkbox" data-e="1460.82" checked="">K-40 (1460.82)</label></div>
+      </div>
+    </div>
+
+    <!-- Tham số chuẩn IAEA (lưu cùng cấu hình) -->
+    <div class="cfg-box cfg-std">
+      <div class="cfg-bh">🧪 Tham số chuẩn IAEA (hoạt độ &amp; khối lượng)</div>
+      <p class="cfg-note">Các giá trị này được lưu cùng cấu hình và tự áp dụng. Mặc định theo chứng chỉ &amp; Excel. Khi tự kiểm (mẫu = chuẩn), đặt khối lượng mẫu = khối lượng chuẩn tương ứng để thu hồi đúng hoạt độ.</p>
+      <table class="cfg-stdtbl">
+        <thead><tr><th>Chuẩn</th><th>Hoạt độ (Bq/kg)</th><th>m (kg)</th></tr></thead>
+        <tbody>
+          <tr><td>RGU-1</td><td><input id="C_RGU" type="number" step="1"></td><td><input id="M_RGU" type="number" step="0.0001"></td></tr>
+          <tr><td>RGTh-1</td><td><input id="C_RGTh" type="number" step="1"></td><td><input id="M_RGTh" type="number" step="0.0001"></td></tr>
+          <tr><td>RGK-1</td><td><input id="C_RGK" type="number" step="1"></td><td><input id="M_RGK" type="number" step="0.0001"></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="cfgMsg" class="cfg-msg ok">Đã nạp từ thư mục: PHONG ← phong.html · RGTh ← RGTh1_Report.html · RGK ← RGK1_Report.html · RGU ← RGU1_Report.html.</div>
+  </div>
+</div>
+
+<main>
+  <!-- ================= CỘT TRÁI ================= -->
+  <section>
+    <!-- nạp dữ liệu -->
+    <div class="card t" style="border-top-color:var(--cyan)">
+      <div class="head"><i style="background:var(--cyan)"></i><span style="color:var(--cyan)">Nạp dữ liệu mẫu</span></div>
+      <select id="target" class="hidden"><option value="MAU">MẪU đo</option></select>
+      <div id="drop" class="dz">
+        <div class="ar">⤓</div>
+        <p>Thả file report bGamma (.html) của <b>MẪU đo</b></p>
+        <small>hoặc bấm để chọn · nhận cả .txt/.csv 3 cột</small>
+        <input id="fileInput" type="file" accept=".html,.htm,.txt,.csv,.tsv" class="hidden">
+      </div>
+      <div id="status" class="status ok">Đã nạp mẫu: Mẫu22_Report.html — 6 đỉnh.</div>
+    </div>
+
+    <!-- (Khối dữ liệu đã ẩn — trạng thái chuẩn/phông xem ở mục Cấu hình) -->
+    <div id="blocks" class="hidden"><div class="blk"><span><span class="dot" style="background:#0e7490"></span>RGU-1 (chuẩn U)</span><span><span style="font-size:9px;color:#fff;background:#0e7490;border-radius:4px;padding:1px 5px;margin-right:4px">đã nạp</span><span class="cnt" style="background:#0e7490">4 đỉnh</span></span></div><div class="blk"><span><span class="dot" style="background:#7c3aed"></span>RGTh-1 (chuẩn Th)</span><span><span style="font-size:9px;color:#fff;background:#7c3aed;border-radius:4px;padding:1px 5px;margin-right:4px">đã nạp</span><span class="cnt" style="background:#7c3aed">2 đỉnh</span></span></div><div class="blk"><span><span class="dot" style="background:#15803d"></span>RGK-1 (chuẩn K)</span><span><span style="font-size:9px;color:#fff;background:#15803d;border-radius:4px;padding:1px 5px;margin-right:4px">đã nạp</span><span class="cnt" style="background:#15803d">1 đỉnh</span></span></div><div class="blk"><span><span class="dot" style="background:#be123c"></span>MẪU đo</span><span><span style="font-size:9px;color:#fff;background:#be123c;border-radius:4px;padding:1px 5px;margin-right:4px">đã nạp</span><span class="cnt" style="background:#be123c">6 đỉnh</span></span></div><div class="blk"><span><span class="dot" style="background:#334155"></span>PHÔNG (cốc rỗng)</span><span><span style="font-size:9px;color:#fff;background:#334155;border-radius:4px;padding:1px 5px;margin-right:4px">đã nạp</span><span class="cnt" style="background:#334155">6 đỉnh</span></span></div></div>
+
+    <!-- tham số mẫu -->
+    <div class="card t" style="border-top-color:var(--amber)">
+      <div class="head"><i style="background:var(--amber)"></i><span style="color:var(--amber)">Tham số mẫu</span></div>
+      <label class="row"><span>Khối lượng khô (kg)</span><input id="m" type="number" step="0.001" value="0.4"></label>
+      <label class="row"><span>Live time (s)</span><input id="t" type="number" step="1" value="86400"></label>
+      <label class="row"><span>Dung sai khớp E (keV)</span><input id="tol" type="number" step="0.1" value="3"></label>
+    </div>
+
+    <!-- (bảng Chuẩn IAEA đã chuyển vào mục Cấu hình) -->
+
+    <!-- báo cáo & lưu -->
+    <div class="card t" style="border-top-color:var(--green)">
+      <div class="head"><i style="background:var(--green)"></i><span style="color:var(--green)">Báo cáo &amp; lưu</span></div>
+      <label class="row"><span>Khách hàng</span><input id="customer" class="grow" type="text"></label>
+      <label class="row"><span>Tên/ID mẫu</span><input id="name" class="grow" type="text" value="Mẫu demo"></label>
+      <label class="row"><span>Người đo</span><input id="operator" class="grow" type="text"></label>
+      <label class="row"><span>Ngày đo</span><input id="date" class="grow" type="date"></label>
+      <label class="row"><span>Loại nền mẫu</span>
+        <select id="matrix" class="grow">
+          <option>Tro bay</option><option>Đất</option><option>Trầm tích</option><option>Vật liệu xây dựng</option><option>Khác</option>
+        </select>
+      </label>
+      <button id="btnSave" class="b-fill" style="background:var(--indigo)">💾 Lưu kết quả vào CSDL</button>
+      <div style="border-top:1px solid #f1f5f9;margin:8px 0"></div>
+      <button id="btnReport" class="b-fill" style="background:var(--green)">⬇ Xuất báo cáo (.html → in PDF)</button>
+      <button id="btnTsv" class="b-emer" style="width:100%;margin-top:6px">⬇ Xuất số liệu mẫu này (.txt)</button>
+    </div>
+  </section>
+
+  <!-- ================= CỘT PHẢI ================= -->
+  <section>
+    <div class="head"><i style="background:#0f172a"></i><span style="color:#0f172a">Hoạt độ khối <span class="unit">(Bq/kg)</span></span></div>
+    <div id="mauInfo"><div style="display:flex;align-items:center;gap:8px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:7px 11px;margin-bottom:12px;font-size:12px"><span style="font-size:14px">📄</span><span>Đang tính mẫu: <b style="color:#be123c">Mẫu22_Report.html</b> <span style="color:#475569">· đo lúc 19 Jun 2026 16:59:04</span></span></div></div>
+    <div id="summary" class="summ"><div class="sc"><div class="t" style="background:#0e7490">Ra-226</div><div class="b"><div class="v">140,7</div><div class="u">± 2,9 · 2,0%</div><div class="n" style="color:#0e7490">3 vạch · χ²ᵣ 5,68</div></div></div><div class="sc"><div class="t" style="background:#7c3aed">Ra-228</div><div class="b"><div class="v">108,0</div><div class="u">± 7,3 · 6,7%</div><div class="n" style="color:#7c3aed">1 vạch</div></div></div><div class="sc"><div class="t" style="background:#b45309">Th-228</div><div class="b"><div class="v">52,3</div><div class="u">± 3,8 · 7,2%</div><div class="n" style="color:#b45309">1 vạch</div></div></div><div class="sc"><div class="t" style="background:#15803d">K-40</div><div class="b"><div class="v">126,4</div><div class="u">± 10,4 · 8,2%</div><div class="n" style="color:#15803d">1 vạch</div></div></div></div>
+    <div id="adequacy"><div class="adq ok"><b class="ok">✓ Phông đạt ở các đỉnh có trừ phông</b><span> — chỉ trừ phông ở Tl-208 &amp; K-40. Tiêu chí σ_phông ≤ ⅓·σ_mẫu (cps); cột “×t cần” = bội số live time phông để đạt.</span></div></div>
+
+    <div class="tbl">
+      <div class="cap" style="background:linear-gradient(90deg,#334155,#334155)">Chi tiết theo đỉnh</div>
+      <div class="scroll"><table id="peakTable"><thead><tr><th class="l">E (keV)</th><th class="l">Đồng vị</th><th>CF (cps/Bq)</th><th>A_tổng (Bq)</th><th>C_mẫu (Bq/kg)</th><th>u (%)</th><th>MDA (Bq/kg)</th><th>×t cần</th></tr></thead><tbody><tr><td class="l">295.22</td><td class="l"><b style="color:#0e7490">Pb-214</b> <span style="color:#475569">→</span> <b style="color:#0e7490">Ra-226</b></td><td>0,0044</td><td>85,00</td><td><b>143,00</b></td><td>2,9</td><td style="color:#475569">3,60</td><td style="color:#059669;font-weight:600">—</td></tr><tr><td class="l">1120.29</td><td class="l"><b style="color:#0e7490">Bi-214</b> <span style="color:#475569">→</span> <b style="color:#0e7490">Ra-226</b></td><td>0,0010</td><td>74,49</td><td><b>125,32</b></td><td>4,5</td><td style="color:#475569">8,93</td><td style="color:#059669;font-weight:600">—</td></tr><tr><td class="l">1764.49</td><td class="l"><b style="color:#0e7490">Bi-214</b> <span style="color:#475569">→</span> <b style="color:#0e7490">Ra-226</b></td><td>0,0008</td><td>90,31</td><td><b>151,93</b></td><td>3,8</td><td style="color:#475569">9,04</td><td style="color:#059669;font-weight:600">—</td></tr><tr><td class="l">911.2</td><td class="l"><b style="color:#7c3aed">Ac-228</b> <span style="color:#475569">→</span> <b style="color:#7c3aed">Ra-228</b></td><td>0,0015</td><td>64,22</td><td><b>108,05</b></td><td>6,7</td><td style="color:#475569">6,35</td><td style="color:#059669;font-weight:600">—</td></tr><tr><td class="l">2614.51</td><td class="l"><b style="color:#b45309">Tl-208</b> <span style="color:#475569">→</span> <b style="color:#b45309">Th-228</b></td><td>0,0010</td><td>31,07</td><td><b>52,27</b></td><td>7,2</td><td style="color:#475569">5,72</td><td style="color:#059669;font-weight:600">✓</td></tr><tr><td class="l">1460.82</td><td class="l"><b style="color:#15803d">K-40</b> <span style="color:#475569">→</span> <b style="color:#15803d">K-40</b></td><td>0,0005</td><td>75,15</td><td><b>126,43</b></td><td>8,2</td><td style="color:#475569">14,00</td><td style="color:#059669;font-weight:600">✓</td></tr></tbody></table></div>
+    </div>
+
+    <div class="tbl">
+      <div class="dbhead">
+        <span style="font-size:12px;font-weight:600">Cơ sở dữ liệu mẫu đo · <span id="dbCount">0</span> bản ghi</span>
+        <div class="acts">
+          <input id="dbSearch" class="search" type="text" placeholder="Tìm khách hàng / mã mẫu…">
+          <button id="btnDbReload">↻ Tải lại</button>
+          <button id="btnDbJson">Sao lưu .json</button>
+          <button id="btnDbOpen">Mở .json</button>
+          <button id="btnDbTsv">Xuất .txt</button>
+          <button id="btnDbClear" class="del">Xoá hết</button>
+          <input id="dbImport" type="file" accept=".json" class="hidden">
+        </div>
+      </div>
+      <div id="fileBar" class="filebar"><span class="fb-muted">Chưa liên kết file CSDL cố định trên ổ đĩa.</span><button class="fb-btn" data-act="link">Liên kết file…</button></div>
+      <div id="dbBody"><div class="empty">Chưa có bản ghi. Tính xong một mẫu → điền khách hàng/mã mẫu → bấm “Lưu kết quả vào CSDL”.</div></div>
+      <div class="note-i" style="padding:6px 12px">Tự lưu trên máy (IndexedDB) giữa các phiên · bấm vào một dòng để xem chi tiết / xuất lại báo cáo · nên “Sao lưu .json” định kỳ.</div>
+    </div>
+
+    <p class="foot">
+      Engine tính trùng khớp <code>NORM_so_sanh_cps.xlsx</code> (6 đỉnh · Ra-226 ≈ 32,0 · Ra-228 ≈ 40,7 · Th-228 ≈ 37,9 · K-40 ≈ 410,7 Bq/kg).
+      Chuỗi: CF = R_chuẩn,net /(C·m_chuẩn) → A_tổng = R_mẫu,net /CF → C_mẫu = A_tổng /m_mẫu. Trung bình trọng số theo 1/u².
+    </p>
+  </section>
+</main>
+
+<div id="overlay" class="overlay hidden"><div class="modal">
+  <div class="mh"><b id="mTitle">Bản ghi</b><button class="x" id="mClose">✕ Đóng</button></div>
+  <div class="mb" id="mBody"></div>
+  <div class="mf"><button id="mReport" class="b-fill" style="background:var(--green);width:auto;padding:8px 14px">⬇ Xuất lại báo cáo (.html)</button></div>
+</div></div>
+
+<script>
+"use strict";
+
+/* ---------------- dữ liệu cấu hình ---------------- */
+const PEAKS=[
+ {E:295.22,nuc:"Pb-214",to:"Ra-226",std:"RGU"},
+ {E:1120.29,nuc:"Bi-214",to:"Ra-226",std:"RGU"},
+ {E:1764.49,nuc:"Bi-214",to:"Ra-226",std:"RGU"},
+ {E:911.2,nuc:"Ac-228",to:"Ra-228",std:"RGTh"},
+ {E:2614.51,nuc:"Tl-208",to:"Th-228",std:"RGTh",bg:true},
+ {E:1460.82,nuc:"K-40",to:"K-40",std:"RGK",bg:true}
+];
+// Mặc định: chỉ trừ phông ở các đỉnh có phông thực (K-40 1460.82 & Tl-208 2614.51)
+const DEFAULT_BG_PEAKS=PEAKS.filter(p=>p.bg).map(p=>p.E);
+const CONTINUUM={295.22:0.344409,911.2:0.124897,1120.29:0.103707,1460.82:0.081671,1764.49:0.068905,2614.51:0.048368};
+const NUC_COLOR={"Ra-226":"#0e7490","Ra-228":"#7c3aed","Th-228":"#b45309","K-40":"#15803d"};
+const NUCS=["Ra-226","Ra-228","Th-228","K-40"];
+const BLOCKS=[
+ {k:"RGU",label:"RGU-1 (chuẩn U)",c:"#0e7490"},
+ {k:"RGTh",label:"RGTh-1 (chuẩn Th)",c:"#7c3aed"},
+ {k:"RGK",label:"RGK-1 (chuẩn K)",c:"#15803d"},
+ {k:"MAU",label:"MẪU đo",c:"#be123c"},
+ {k:"PHONG",label:"PHÔNG (cốc rỗng)",c:"#334155"}
+];
+const STD={RGU:{C:4950,uC:100,m:0.6488},RGTh:{C:3250,uC:180,m:0.678},RGK:{C:14180,uC:160,m:0.66}};
+function emptyBlocks(){return {RGU:[],RGTh:[],RGK:[],MAU:[],PHONG:[]};}
+
+/* ---------------- trạng thái ---------------- */
+const state={
+  blocks:emptyBlocks(),
+  std:JSON.parse(JSON.stringify(STD)),
+  sample:{m:0.4,t:86400,tol:3},
+  cfg:{subtractBg:true,bgPeaks:DEFAULT_BG_PEAKS.slice()},
+  report:{name:"Mẫu demo",customer:"",matrix:"Tro bay",operator:"",date:new Date().toISOString().slice(0,10)},
+  target:"MAU",
+  db:[],
+  dbQuery:"",
+  mauInfo:{name:"",date:""},
+  loaded:{RGU:false,RGTh:false,RGK:false,MAU:false,PHONG:false},
+  fileHandle:null,
+  fileName:"",
+  fileReady:false,
+  cfgDir:null,
+  last:{perPeak:[],summary:[]}
+};
+
+/* ---------------- engine ---------------- */
+function lookup(rows,E,tol){let best=null,bd=Infinity;for(const r of rows||[]){const d=Math.abs(r.E-E);if(d<=tol&&d<bd){bd=d;best=r;}}return best;}
+function compute(){
+  const tol=state.sample.tol, mS=state.sample.m, tS=state.sample.t, bl=state.blocks;
+  const subBg=state.cfg.subtractBg!==false;
+  const bgSet=new Set((state.cfg.bgPeaks||[]).map(Number));
+  const perPeak=PEAKS.map(p=>{
+    const s=state.std[p.std];
+    const pSubBg=subBg&&bgSet.has(p.E);
+    const ch=lookup(bl[p.std],p.E,tol), mu=lookup(bl.MAU,p.E,tol), bg=pSubBg?lookup(bl.PHONG,p.E,tol):null;
+    if(!ch||!mu) return Object.assign({},p,{ok:false});
+    const bgMissing=pSubBg&&!bg&&(bl.PHONG||[]).length>0;
+    const bgA=bg?bg.area:0,bgS=bg?bg.sig:0;
+    const RchNet=ch.area-bgA,uRch=Math.hypot(ch.sig,bgS);
+    const RmNet=mu.area-bgA,uRm=Math.hypot(mu.sig,bgS);
+    const CF=RchNet/(s.C*s.m), Atot=RmNet/CF, Cmau=Atot/mS;
+    const urel=Math.hypot(uRm/RmNet,uRch/RchNet,s.uC/s.C), uC=Cmau*urel;
+    const B=(CONTINUUM[p.E]||0)*tS, MDA=(2.71+4.65*Math.sqrt(B))/(tS*CF*mS);
+    const bgAdequate=bgS<=mu.sig/3, tFactor=bgS>0?Math.pow(bgS/(mu.sig/3),2):0;
+    return Object.assign({},p,{ok:true,CF,Atot,Cmau,uC,urel,MDA,bgAdequate,tFactor,subBg:pSubBg,bgMissing});
+  });
+  const byNuc={};
+  for(const r of perPeak){if(!r.ok)continue;(byNuc[r.to]=byNuc[r.to]||[]).push(r);}
+  const summary=Object.keys(byNuc).map(nuc=>{
+    const rs=byNuc[nuc], W=rs.map(r=>1/(r.uC*r.uC)), sumW=W.reduce((a,b)=>a+b,0);
+    const mean=rs.reduce((a,r,i)=>a+W[i]*r.Cmau,0)/sumW, uc=1/Math.sqrt(sumW);
+    const chi2=rs.length>1?rs.reduce((a,r,i)=>a+W[i]*Math.pow(r.Cmau-mean,2),0)/(rs.length-1):null;
+    return {nuc,n:rs.length,mean,uc,urel:uc/mean,chi2};
+  });
+  return {perPeak,summary};
+}
+
+/* ---------------- parsers ---------------- */
+function num(t){t=String(t).trim().replace(/\s/g,"");if(t.includes(".")&&t.includes(","))t=t.replace(/,/g,"");else if(t.includes(",")&&!t.includes("."))t=t.replace(",",".");const v=parseFloat(t);return Number.isFinite(v)?v:null;}
+function parsePaste(text){const out=[];for(const line of text.split(/\r?\n/)){const c=line.trim().split(/[\t;]+|\s{2,}|\s+/).filter(Boolean);if(c.length<3)continue;const E=num(c[0]),a=num(c[1]),s=num(c[2]);if(E!=null&&a!=null&&s!=null)out.push({E,area:a,sig:s});}return out;}
+function parseBGammaHTML(html){
+  const doc=new DOMParser().parseFromString(html,"text/html");
+  const tables=doc.querySelectorAll("table");
+  for(const tbl of tables){
+    const trs=tbl.querySelectorAll("tr");if(!trs.length)continue;
+    const head=(trs[0].innerText||"").toLowerCase();
+    if(!head.includes("peaklabel")&&!(head.includes("area")&&head.includes("kev")))continue;
+    const out=[];
+    for(let i=1;i<trs.length;i++){
+      const cells=Array.from(trs[i].querySelectorAll("td,th")).map(c=>c.innerText.trim());
+      if(cells.length<14)continue;
+      const E=num(cells[4]),a=num(cells[12]),s=num(cells[13]);
+      if(E!=null&&a!=null&&s!=null)out.push({E,area:a,sig:s});
+    }
+    if(out.length)return out;
+  }
+  return null;
+}
+
+/* ---------------- tiện ích ---------------- */
+function vn(x,d){if(d===undefined)d=2;return (x==null||!Number.isFinite(x))?"":x.toLocaleString("vi-VN",{minimumFractionDigits:d,maximumFractionDigits:d});}
+function esc(s){return String(s==null?"":s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
+function download(name,text,mime){const blob=new Blob(["\uFEFF"+text],{type:mime});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);}
+function setStatus(ok,msg){const el=document.getElementById("status");el.className="status "+(ok?"ok":"err");el.textContent=msg;}
+function blockLabel(k){return BLOCKS.find(b=>b.k===k).label;}
+
+/* ---------------- IndexedDB (CSDL trên máy) ---------------- */
+const DBN="norm_tool",STORE="kv";
+function idbOpen(){return new Promise((res,rej)=>{const rq=indexedDB.open(DBN,1);rq.onupgradeneeded=()=>rq.result.createObjectStore(STORE);rq.onsuccess=()=>res(rq.result);rq.onerror=()=>rej(rq.error);});}
+async function idbSet(key,val){try{const db=await idbOpen();await new Promise((res,rej)=>{const tx=db.transaction(STORE,"readwrite");tx.objectStore(STORE).put(val,key);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error);});return true;}catch(e){try{localStorage.setItem("norm_"+key,JSON.stringify(val));return true;}catch(_){return false;}}}
+async function idbGet(key){try{const db=await idbOpen();return await new Promise((res,rej)=>{const tx=db.transaction(STORE,"readonly");const rq=tx.objectStore(STORE).get(key);rq.onsuccess=()=>res(rq.result);rq.onerror=()=>rej(rq.error);});}catch(e){try{const v=localStorage.getItem("norm_"+key);return v?JSON.parse(v):undefined;}catch(_){return undefined;}}}
+function persist(){idbSet("records",state.db);if(state.fileReady&&state.fileHandle){writeHandle(state.fileHandle,state.db).catch(()=>{});}}
+
+/* ---------------- File CSDL cố định trên ổ đĩa (File System Access API) ---------------- */
+const FS_OK = (typeof window!=="undefined") && ("showSaveFilePicker" in window);
+async function verifyPermission(handle,write){
+  const opts={mode:write?"readwrite":"read"};
+  if((await handle.queryPermission(opts))==="granted")return true;
+  if((await handle.requestPermission(opts))==="granted")return true;
+  return false;
+}
+async function readHandle(handle){const f=await handle.getFile();const t=(await f.text()).trim();if(!t)return [];const a=JSON.parse(t);return Array.isArray(a)?a:[];}
+async function writeHandle(handle,data){const w=await handle.createWritable();await w.write(JSON.stringify(data,null,2));await w.close();}
+async function linkFile(){
+  try{
+    const handle=await window.showSaveFilePicker({suggestedName:"NORM_CSDL.json",types:[{description:"CSDL NORM (JSON)",accept:{"application/json":[".json"]}}]});
+    if(!(await verifyPermission(handle,true))){setStatus(false,"Chưa được cấp quyền ghi file.");return;}
+    let existing=[];try{existing=await readHandle(handle);}catch(e){existing=[];}
+    if(existing.length){const ids=new Set(state.db.map(x=>x.id));state.db=existing.filter(x=>x&&!ids.has(x.id)).concat(state.db).sort((a,b)=>b.id-a.id);}
+    state.fileHandle=handle;state.fileName=handle.name;state.fileReady=true;
+    try{await idbSet("fileHandle",handle);}catch(e){}
+    persist();renderDB();renderFileBar();
+    setStatus(true,"Đã liên kết file: "+handle.name+" — từ giờ tự ghi thẳng vào file này.");
+  }catch(e){if(e&&e.name==="AbortError")return;setStatus(false,"Không liên kết được file.");}
+}
+async function unlinkFile(){state.fileHandle=null;state.fileName="";state.fileReady=false;try{await idbSet("fileHandle",undefined);}catch(e){}renderFileBar();setStatus(true,"Đã ngắt liên kết file. Dữ liệu vẫn lưu trong trình duyệt.");}
+async function reconnectFile(){
+  if(!state.fileHandle)return;
+  try{
+    if(await verifyPermission(state.fileHandle,true)){
+      const data=await readHandle(state.fileHandle);if(Array.isArray(data))state.db=data;
+      state.fileReady=true;persist();renderDB();renderFileBar();
+      setStatus(true,"Đã kết nối lại file: "+state.fileName+" ("+state.db.length+" bản ghi).");
+    }else setStatus(false,"Chưa được cấp quyền ghi file.");
+  }catch(e){setStatus(false,"Không đọc được file CSDL.");}
+}
+function renderFileBar(){
+  const el=document.getElementById("fileBar");if(!el)return;
+  if(!FS_OK){el.innerHTML='<span class="fb-muted">Trình duyệt này chưa hỗ trợ ghi thẳng ra file (cần Chrome/Edge) — vẫn dùng được Sao lưu/Mở .json.</span>';return;}
+  if(state.fileReady&&state.fileHandle){
+    el.innerHTML='<span class="fb-on">📄 Đang ghi thẳng vào: <b>'+esc(state.fileName)+'</b></span><button class="fb-btn" data-act="unlink">Ngắt</button>';
+  }else if(state.fileHandle){
+    el.innerHTML='<span class="fb-warn">📄 '+esc(state.fileName)+' — cần cấp lại quyền</span><button class="fb-btn" data-act="reconnect">Kết nối lại</button>';
+  }else{
+    el.innerHTML='<span class="fb-muted">Chưa liên kết file CSDL cố định trên ổ đĩa.</span><button class="fb-btn" data-act="link">Liên kết file…</button>';
+  }
+}
+
+// Lưu file có hộp thoại chọn nơi lưu (Chrome/Edge); trình duyệt khác lùi về tải về Download
+async function saveAs(name,text,mime,opts){
+  opts=opts||{};
+  const data=(opts.bom?"\uFEFF":"")+text;
+  if(FS_OK){
+    try{
+      const accept={};accept[mime.split(";")[0]]=[opts.ext||("."+name.split(".").pop())];
+      const handle=await window.showSaveFilePicker({suggestedName:name,types:[{description:opts.desc||"File",accept}]});
+      const w=await handle.createWritable();await w.write(data);await w.close();
+      setStatus(true,"Đã lưu: "+(handle.name||name));
+      return;
+    }catch(e){if(e&&e.name==="AbortError")return;}
+  }
+  const blob=new Blob([data],{type:mime});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+
+/* ---------------- render ---------------- */
+function renderBlocks(){
+  const filled={};for(const b of BLOCKS)filled[b.k]=(state.blocks[b.k]||[]).length;
+  document.getElementById("blocks").innerHTML=BLOCKS.map(b=>{
+    const isLoaded=state.loaded[b.k];
+    const tag=isLoaded
+      ? '<span style="font-size:9px;color:#fff;background:'+b.c+';border-radius:4px;padding:1px 5px;margin-right:4px">đã nạp</span>'
+      : '<span style="font-size:9px;color:#92400e;background:#fef3c7;border-radius:4px;padding:1px 5px;margin-right:4px">demo</span>';
+    return '<div class="blk"><span><span class="dot" style="background:'+b.c+'"></span>'+esc(b.label)+'</span>'+
+      '<span>'+tag+'<span class="cnt" style="background:'+(filled[b.k]?b.c:"#cbd5e1")+'">'+filled[b.k]+' đỉnh</span></span></div>';
+  }).join("");
+}
+function renderMauInfo(){
+  const el=document.getElementById("mauInfo");if(!el)return;
+  const mi=state.mauInfo;
+  if(!mi||!mi.name){el.innerHTML="";return;}
+  el.innerHTML='<div style="display:flex;align-items:center;gap:8px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:7px 11px;margin-bottom:12px;font-size:12px">'+
+    '<span style="font-size:14px">📄</span><span>Đang tính mẫu: <b style="color:#be123c">'+esc(mi.name)+'</b>'+
+    (mi.date?' <span style="color:#475569">· đo lúc '+esc(mi.date)+'</span>':'')+'</span></div>';
+}
+function renderResults(){
+  const {perPeak,summary}=compute();
+  state.last={perPeak,summary};
+  // thẻ tổng hợp
+  document.getElementById("summary").innerHTML=NUCS.map(nuc=>{
+    const s=summary.find(x=>x.nuc===nuc),col=NUC_COLOR[nuc];
+    const body=s?('<div class="v">'+vn(s.mean,1)+'</div><div class="u">± '+vn(s.uc,1)+' · '+vn(s.urel*100,1)+'%</div>'+
+      '<div class="n" style="color:'+col+'">'+s.n+' vạch'+(s.chi2!=null?' · χ²ᵣ '+vn(s.chi2,2):'')+'</div>')
+      :'<div style="color:#64748b;font-size:12px">thiếu dữ liệu</div>';
+    return '<div class="sc"><div class="t" style="background:'+col+'">'+nuc+'</div><div class="b">'+body+'</div></div>';
+  }).join("");
+  // độ đủ phông (chỉ khi đang trừ phông)
+  const subBg=state.cfg.subtractBg!==false;
+  const subPeaks=perPeak.filter(p=>p.ok&&p.subBg), inad=subPeaks.filter(p=>!p.bgAdequate).length;
+  const subNames=PEAKS.filter(p=>(state.cfg.bgPeaks||[]).map(Number).includes(p.E)).map(p=>p.nuc).join(" & ");
+  const missing=perPeak.filter(p=>p.ok&&p.bgMissing);
+  const missHtml=missing.length?('<div class="adq warn" style="margin-top:6px"><b class="warn">⚠ Không tìm thấy vạch phông khớp</b><span> — '+
+    missing.map(p=>p.nuc+' ('+p.E+' keV)').join(', ')+': đã chọn trừ phông nhưng phổ PHÔNG không có vạch trong ±'+state.sample.tol+' keV → đỉnh này KHÔNG được trừ phông. Có thể do phổ phông trôi năng lượng; tăng “Dung sai khớp E” hoặc hiệu chuẩn lại phông.</span></div>'):'';
+  document.getElementById("adequacy").innerHTML= (!subBg?
+    ('<div class="adq warn"><b class="warn">⊘ Không trừ phông</b><span> — đang dùng diện tích thô của chuẩn &amp; mẫu (tùy chọn trong ⚙ Cấu hình). Tiêu chí đủ phông không áp dụng.</span></div>')
+    : subPeaks.length?
+    ('<div class="adq '+(inad?'warn':'ok')+'"><b class="'+(inad?'warn':'ok')+'">'+
+     (inad?('⚠ Phông chưa đủ ở '+inad+'/'+subPeaks.length+' đỉnh có trừ phông'):'✓ Phông đạt ở các đỉnh có trừ phông')+'</b>'+
+     '<span> — chỉ trừ phông ở '+esc(subNames||"—")+'. Tiêu chí σ_phông ≤ ⅓·σ_mẫu (cps); cột “×t cần” = bội số live time phông để đạt.</span></div>')
+    : ('<div class="adq ok"><b class="ok">✓ Trừ phông theo cấu hình</b><span> — chỉ trừ phông ở '+esc(subNames||"—")+'; các đỉnh khác dùng diện tích thô.</span></div>'))+missHtml;
+  // bảng đỉnh
+  let rows='<thead><tr><th class="l">E (keV)</th><th class="l">Đồng vị</th><th>CF (cps/Bq)</th><th>A_tổng (Bq)</th><th>C_mẫu (Bq/kg)</th><th>u (%)</th><th>MDA (Bq/kg)</th><th>×t cần</th></tr></thead><tbody>';
+  for(const p of perPeak){
+    if(p.ok){
+      rows+='<tr><td class="l">'+p.E+'</td><td class="l"><b style="color:'+NUC_COLOR[p.to]+'">'+p.nuc+'</b> <span style="color:#475569">→</span> <b style="color:'+NUC_COLOR[p.to]+'">'+p.to+'</b></td>'+
+        '<td>'+vn(p.CF,4)+'</td><td>'+vn(p.Atot,2)+'</td><td><b>'+vn(p.Cmau,2)+'</b></td><td>'+vn(p.urel*100,1)+'</td><td style="color:#475569">'+vn(p.MDA,2)+'</td>'+
+        '<td style="color:'+(p.bgAdequate?'#059669':'#d97706')+';font-weight:600">'+(!subBg||!p.subBg?'—':(p.bgAdequate?'✓':vn(p.tFactor,1)+'×'))+'</td></tr>';
+    }else{
+      rows+='<tr style="opacity:.45"><td class="l">'+p.E+'</td><td class="l">'+p.nuc+' → '+p.to+'</td><td class="l" colspan="6">thiếu đỉnh trong chuẩn/mẫu</td></tr>';
+    }
+  }
+  document.getElementById("peakTable").innerHTML=rows+'</tbody>';
+}
+function dbFiltered(){
+  const q=(state.dbQuery||"").trim().toLowerCase();
+  if(!q)return state.db;
+  return state.db.filter(r=>((r.customer||"")+" "+(r.sampleId||"")+" "+(r.matrix||"")).toLowerCase().includes(q));
+}
+function renderDB(){
+  const list=dbFiltered();
+  document.getElementById("dbCount").textContent= state.dbQuery? (list.length+"/"+state.db.length) : state.db.length;
+  const body=document.getElementById("dbBody");
+  if(!state.db.length){body.innerHTML='<div class="empty">Chưa có bản ghi. Tính xong một mẫu → điền khách hàng/mã mẫu → bấm “Lưu kết quả vào CSDL”.</div>';return;}
+  if(!list.length){body.innerHTML='<div class="empty">Không có bản ghi khớp “'+esc(state.dbQuery)+'”.</div>';return;}
+  let h='<div class="scroll"><table><thead><tr><th class="l">Thời gian</th><th class="l">Khách hàng</th><th class="l">Mã mẫu</th><th class="l">Loại</th>';
+  for(const n of NUCS)h+='<th style="color:'+NUC_COLOR[n]+'">'+n+'</th>';
+  h+='<th></th></tr></thead><tbody>';
+  for(const r of list){
+    const dt=new Date(r.savedAt).toLocaleString("vi-VN",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"});
+    h+='<tr class="click" data-view="'+r.id+'"><td class="l" style="color:#475569;white-space:nowrap">'+dt+'</td><td class="l">'+esc(r.customer||"—")+'</td><td class="l">'+esc(r.sampleId||"—")+'</td><td class="l" style="color:#475569">'+esc(r.matrix||"—")+'</td>';
+    for(const n of NUCS){const v=r.results[n];h+='<td style="white-space:nowrap">'+(v?vn(v.c,1)+' ± '+vn(v.u,1):'—')+'</td>';}
+    h+='<td><button class="xdel" data-id="'+r.id+'" title="Xoá bản ghi">✕</button></td></tr>';
+  }
+  body.innerHTML=h+'</tbody></table></div>';
+}
+
+/* ---------------- CSDL: thao tác ---------------- */
+function saveRecord(){
+  const results={};for(const s of state.last.summary)results[s.nuc]={c:s.mean,u:s.uc,n:s.n,chi2:s.chi2};
+  if(!Object.keys(results).length){setStatus(false,"Chưa có kết quả để lưu.");return;}
+  const r=state.report;
+  const peaks=state.last.perPeak.map(p=>p.ok
+    ?{E:p.E,nuc:p.nuc,to:p.to,ok:true,CF:p.CF,Atot:p.Atot,Cmau:p.Cmau,urel:p.urel,MDA:p.MDA,bgAdequate:p.bgAdequate,tFactor:p.tFactor}
+    :{E:p.E,nuc:p.nuc,to:p.to,ok:false});
+  const rec={id:Date.now(),savedAt:new Date().toISOString(),customer:r.customer||"",sampleId:r.name||"",matrix:r.matrix||"",operator:r.operator||"",measDate:r.date||"",mass:state.sample.m,live:state.sample.t,sample:{m:state.sample.m,t:state.sample.t},results,peaks};
+  state.db.unshift(rec);persist();renderDB();
+  setStatus(true,"Đã lưu vào CSDL: "+(rec.sampleId||"(không tên)")+".");
+}
+function reloadDB(){
+  idbGet("records").then(recs=>{
+    state.db=Array.isArray(recs)?recs:[];renderDB();
+    setStatus(true,"Đã tải "+state.db.length+" bản ghi từ CSDL trên máy.");
+  });
+}
+// dựng cấu trúc summary/peaks từ một bản ghi để xem lại & xuất báo cáo
+function recToView(rec){
+  const summary=NUCS.filter(n=>rec.results[n]).map(n=>{const v=rec.results[n];return {nuc:n,n:v.n||0,mean:v.c,uc:v.u,urel:v.u/v.c,chi2:v.chi2!=null?v.chi2:null};});
+  const perPeak=rec.peaks||[];
+  const rep={name:rec.sampleId,customer:rec.customer,matrix:rec.matrix,operator:rec.operator,date:rec.measDate};
+  const smp=rec.sample||{m:rec.mass,t:rec.live};
+  return {summary,perPeak,rep,smp};
+}
+function openRecord(id){
+  const rec=state.db.find(r=>r.id===id);if(!rec)return;
+  const {summary,perPeak,rep,smp}=recToView(rec);
+  document.getElementById("mTitle").textContent=(rec.sampleId||"Bản ghi")+(rec.customer?" · "+rec.customer:"");
+  let h='<h3>Thông tin</h3><div class="kv">'+
+    '<div><span>Khách hàng</span>'+esc(rec.customer||"—")+'</div>'+
+    '<div><span>Loại nền</span>'+esc(rec.matrix||"—")+'</div>'+
+    '<div><span>Ngày đo</span>'+esc(rec.measDate||"—")+'</div>'+
+    '<div><span>Người đo</span>'+esc(rec.operator||"—")+'</div>'+
+    '<div><span>Khối lượng</span>'+vn(smp.m,3)+' kg</div>'+
+    '<div><span>Live time</span>'+vn(smp.t,0)+' s</div>'+
+    '<div><span>Lưu lúc</span>'+new Date(rec.savedAt).toLocaleString("vi-VN")+'</div></div>';
+  h+='<h3>Hoạt độ khối (Bq/kg)</h3><table><thead><tr><th class="l">Đồng vị</th><th>n vạch</th><th>C</th><th>u</th><th>u (%)</th><th>χ²ᵣ</th></tr></thead><tbody>';
+  for(const s of summary)h+='<tr><td class="l"><b style="color:'+NUC_COLOR[s.nuc]+'">'+s.nuc+'</b></td><td>'+s.n+'</td><td>'+vn(s.mean,1)+'</td><td>± '+vn(s.uc,1)+'</td><td>'+vn(s.urel*100,1)+'</td><td>'+(s.chi2==null?"—":vn(s.chi2,2))+'</td></tr>';
+  h+='</tbody></table>';
+  if(perPeak.length){
+    h+='<h3>Chi tiết theo đỉnh</h3><table><thead><tr><th class="l">E (keV)</th><th class="l">Đồng vị</th><th>CF (cps/Bq)</th><th>A_tổng (Bq)</th><th>C_mẫu (Bq/kg)</th><th>u (%)</th><th>MDA (Bq/kg)</th></tr></thead><tbody>';
+    for(const p of perPeak){
+      if(p.ok)h+='<tr><td class="l">'+p.E+'</td><td class="l"><span style="color:'+NUC_COLOR[p.to]+'">'+p.nuc+'</span> → '+p.to+'</td><td>'+vn(p.CF,4)+'</td><td>'+vn(p.Atot,2)+'</td><td><b>'+vn(p.Cmau,2)+'</b></td><td>'+vn(p.urel*100,1)+'</td><td style="color:#475569">'+vn(p.MDA,2)+'</td></tr>';
+      else h+='<tr style="opacity:.45"><td class="l">'+p.E+'</td><td class="l">'+p.nuc+' → '+p.to+'</td><td colspan="5">thiếu đỉnh</td></tr>';
+    }
+    h+='</tbody></table>';
+  }else{
+    h+='<div class="note-i" style="border:none;padding-top:10px">Bản ghi cũ chưa lưu chi tiết đỉnh — chỉ hiển thị kết quả tổng hợp.</div>';
+  }
+  document.getElementById("mBody").innerHTML=h;
+  document.getElementById("mReport").onclick=()=>saveAs("BaoCao_NORM_"+(rec.sampleId||"mau").replace(/[^\w\-]+/g,"_")+".html",buildReportHTML(rep,smp,summary,perPeak),"text/html",{desc:"Báo cáo (HTML)",ext:".html"});
+  document.getElementById("overlay").classList.remove("hidden");
+}
+function closeModal(){document.getElementById("overlay").classList.add("hidden");}
+function deleteRecord(id){state.db=state.db.filter(r=>r.id!==id);persist();renderDB();}
+function clearDB(){if(confirm("Xoá toàn bộ CSDL trên máy?")){state.db=[];persist();renderDB();setStatus(true,"Đã xoá CSDL.");}}
+function exportDBjson(){saveAs("NORM_CSDL.json",JSON.stringify(state.db,null,2),"application/json",{desc:"CSDL NORM (JSON)",ext:".json"});}
+function importDB(file){const rd=new FileReader();rd.onload=()=>{try{const arr=JSON.parse(String(rd.result));if(!Array.isArray(arr))throw 0;const ids=new Set(state.db.map(x=>x.id));state.db=arr.filter(x=>x&&!ids.has(x.id)).concat(state.db).sort((a,b)=>b.id-a.id);persist();renderDB();setStatus(true,"Đã nạp "+arr.length+" bản ghi từ file CSDL.");}catch(e){setStatus(false,"File CSDL không hợp lệ.");}};rd.readAsText(file);}
+function exportDBtsv(){
+  const head=["Thời gian lưu","Khách hàng","Mã mẫu","Loại nền","Ngày đo","Người đo","m (kg)","t (s)"];
+  for(const n of NUCS){head.push(n);head.push("u "+n);}
+  const L=[head.join("\t")];
+  for(const r of state.db){
+    const row=[new Date(r.savedAt).toLocaleString("vi-VN"),r.customer,r.sampleId,r.matrix,r.measDate,r.operator,vn(r.mass,3),vn(r.live,0)];
+    for(const n of NUCS){const v=r.results[n];row.push(v?vn(v.c,2):"");row.push(v?vn(v.u,2):"");}
+    L.push(row.join("\t"));
+  }
+  saveAs("NORM_CSDL.txt",L.join("\r\n"),"text/tab-separated-values",{desc:"CSDL (TSV)",ext:".txt",bom:true});
+}
+
+/* ---------------- xuất báo cáo / số liệu mẫu ---------------- */
+function safeName(){return (state.report.name||"mau").replace(/[^\w\-]+/g,"_");}
+function buildSampleTSV(){
+  const {perPeak,summary}=state.last,r=state.report,s=state.sample,L=[];
+  L.push("BÁO CÁO ĐỊNH LƯỢNG NORM — PHƯƠNG PHÁP SO SÁNH");
+  L.push(["Khách hàng",r.customer].join("\t"));L.push(["Mẫu",r.name].join("\t"));L.push(["Loại nền",r.matrix].join("\t"));
+  L.push(["Người đo",r.operator].join("\t"));L.push(["Ngày đo",r.date].join("\t"));
+  L.push(["Khối lượng khô (kg)",vn(s.m,3)].join("\t"));L.push(["Live time (s)",vn(s.t,0)].join("\t"));L.push("");
+  L.push(["TỔNG HỢP","n vạch","C (Bq/kg)","u (Bq/kg)","u (%)","χ²ᵣ"].join("\t"));
+  for(const x of summary)L.push([x.nuc,x.n,vn(x.mean,2),vn(x.uc,2),vn(x.urel*100,2),x.chi2==null?"":vn(x.chi2,3)].join("\t"));
+  L.push("");L.push(["E (keV)","Đồng vị","Quy về","CF (cps/Bq)","A_tổng (Bq)","C_mẫu (Bq/kg)","u (%)","MDA (Bq/kg)","Phông"].join("\t"));
+  for(const p of perPeak){if(!p.ok){L.push([p.E,p.nuc,p.to,"thiếu đỉnh"].join("\t"));continue;}L.push([p.E,p.nuc,p.to,vn(p.CF,6),vn(p.Atot,2),vn(p.Cmau,2),vn(p.urel*100,2),vn(p.MDA,2),p.bgAdequate?"đạt":"cần "+vn(p.tFactor,1)+"×"].join("\t"));}
+  return L.join("\r\n");
+}
+function buildReportHTML(rep,smp,sumArg,peakArg){
+  const r=rep||state.report,s=smp||state.sample,summary=sumArg||state.last.summary,perPeak=peakArg||state.last.perPeak;
+  const sumRows=summary.map(x=>'<tr><td style="font-weight:600;color:'+NUC_COLOR[x.nuc]+'">'+x.nuc+'</td><td class="r">'+x.n+'</td><td class="r">'+vn(x.mean,1)+'</td><td class="r">± '+vn(x.uc,1)+'</td><td class="r">'+vn(x.urel*100,1)+'%</td><td class="r">'+(x.chi2==null?"—":vn(x.chi2,2))+'</td></tr>').join("");
+  const peakRows=perPeak.map(p=>p.ok?
+    '<tr><td>'+p.E+'</td><td><span style="color:'+NUC_COLOR[p.to]+';font-weight:600">'+p.nuc+'</span> <span style="color:#475569">→ '+p.to+'</span></td><td class="r">'+vn(p.CF,5)+'</td><td class="r">'+vn(p.Atot,2)+'</td><td class="r" style="font-weight:600">'+vn(p.Cmau,2)+'</td><td class="r">'+vn(p.urel*100,1)+'</td><td class="r">'+vn(p.MDA,2)+'</td><td class="r" style="color:'+(p.bgAdequate?"#059669":"#d97706")+';font-weight:600">'+((!p.subBg)?"—":(p.bgAdequate?"✓":vn(p.tFactor,1)+"×"))+'</td></tr>'
+    :'<tr style="opacity:.5"><td>'+p.E+'</td><td>'+p.nuc+' → '+p.to+'</td><td class="r" colspan="6">thiếu đỉnh</td></tr>').join("");
+  const subBg=state.cfg.subtractBg!==false;
+  const subNames=PEAKS.filter(p=>(state.cfg.bgPeaks||[]).map(Number).includes(p.E)).map(p=>p.nuc).join(" & ");
+  const subPeaks=perPeak.filter(p=>p.ok&&p.subBg).length,inad=perPeak.filter(p=>p.ok&&p.subBg&&!p.bgAdequate).length;
+  const adeq=!subBg?'⊘ Không trừ phông — dùng diện tích thô của chuẩn & mẫu.'
+    :('Chỉ trừ phông ở '+(subNames||"—")+'; các đỉnh khác dùng diện tích thô. '+
+      (subPeaks?(inad?'⚠ Phông chưa đủ ở '+inad+'/'+subPeaks+' đỉnh có trừ phông.':'✓ Phông đạt ở các đỉnh có trừ phông.'):''));
+  const noteCol=(!subBg||inad)?'#f59e0b':'#10b981',noteBg=(!subBg||inad)?'#fffbeb':'#ecfdf5';
+  return '<!doctype html><html lang="vi"><head><meta charset="utf-8"><title>Báo cáo NORM — '+esc(r.name)+'</title>'+
+  '<style>*{box-sizing:border-box}body{font-family:"Segoe UI",system-ui,sans-serif;color:#1e293b;margin:0;background:#f1f5f9}'+
+  '.page{max-width:820px;margin:18px auto;background:#fff;padding:32px 36px;box-shadow:0 1px 4px rgba(0,0,0,.08)}'+
+  'h1{font-size:18px;margin:0}.sub{color:#475569;font-size:12px;margin:3px 0 0}'+
+  '.bar{height:4px;background:linear-gradient(90deg,#0e7490,#1d4ed8,#7c3aed);margin:14px 0 18px;border-radius:2px}'+
+  '.meta{display:grid;grid-template-columns:1fr 1fr;gap:5px 24px;font-size:12px}.meta span{color:#475569;display:inline-block;min-width:118px}'+
+  'h2{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:#334155;margin:22px 0 8px;border-left:3px solid #0e7490;padding-left:8px}'+
+  'table{width:100%;border-collapse:collapse;font-size:12px}th{background:#f1f5f9;text-align:left;padding:6px 8px;font-weight:600;color:#334155;border-bottom:1px solid #e2e8f0}'+
+  'td{padding:5px 8px;border-bottom:1px solid #f1f5f9}.r{text-align:right}'+
+  '.note{font-size:12px;padding:8px 10px;border-left:3px solid '+noteCol+';background:'+noteBg+';margin-top:10px;border-radius:0 4px 4px 0}'+
+  '.foot{margin-top:24px;padding-top:10px;border-top:1px solid #e2e8f0;font-size:11px;color:#475569;line-height:1.5}'+
+  '@media print{body{background:#fff}.page{box-shadow:none;margin:0;max-width:none;padding:0}}</style></head><body><div class="page">'+
+  '<h1>Báo cáo định lượng NORM — phương pháp so sánh</h1>'+
+  '<p class="sub">Viện Khoa học và Kỹ thuật Hạt nhân · đầu dò CeBr₃ 1.5″ (SN 01221005, HV 710 V) · bGamma</p><div class="bar"></div>'+
+  '<div class="meta"><div><span>Khách hàng</span>'+esc(r.customer||"—")+'</div><div><span>Ngày đo</span>'+esc(r.date||"—")+'</div>'+
+  '<div><span>Tên/ID mẫu</span>'+esc(r.name||"—")+'</div><div><span>Loại nền mẫu</span>'+esc(r.matrix||"—")+'</div>'+
+  '<div><span>Người đo</span>'+esc(r.operator||"—")+'</div><div><span>Khối lượng khô</span>'+vn(s.m,3)+' kg</div>'+
+  '<div><span>Live time</span>'+vn(s.t,0)+' s</div><div><span>Phương pháp</span>So sánh RGU-1 / RGTh-1 / RGK-1 (IAEA)</div>'+
+  '<div><span>Xử lý phổ</span>'+(state.cfg.subtractBg!==false?('Trừ phông ở '+(subNames||"—")):'Không trừ phông (diện tích thô)')+'</div></div>'+
+  '<h2>Kết quả hoạt độ khối (Bq/kg khô)</h2><table><thead><tr><th>Đồng vị</th><th class="r">n vạch</th><th class="r">C</th><th class="r">u (k=1)</th><th class="r">u (%)</th><th class="r">χ²ᵣ</th></tr></thead><tbody>'+sumRows+'</tbody></table>'+
+  '<h2>Chi tiết theo đỉnh</h2><table><thead><tr><th>E (keV)</th><th>Đồng vị</th><th class="r">CF (cps/Bq)</th><th class="r">A_tổng (Bq)</th><th class="r">C_mẫu (Bq/kg)</th><th class="r">u (%)</th><th class="r">MDA (Bq/kg)</th><th class="r">Phông</th></tr></thead><tbody>'+peakRows+'</tbody></table>'+
+  (adeq?'<div class="note">'+adeq+'</div>':'')+
+  '<div class="foot">Chuỗi tính: CF = R_chuẩn,net /(C·m_chuẩn) → A_tổng = R_mẫu,net /CF → C_mẫu = A_tổng /m_mẫu. Trung bình trọng số theo 1/u². Xuất từ công cụ NORM · '+new Date().toLocaleString("vi-VN")+'.</div>'+
+  '</div></body></html>';
+}
+
+/* ---------------- nạp file ---------------- */
+function reportDate(txt){const m=txt.match(/<h4>\s*([^<]*\d{4}[^<]*?)\s*<\/h4>/i);return m?m[1].trim():"";}
+function ingestFile(file){
+  const rd=new FileReader();
+  rd.onload=()=>{
+    const txt=String(rd.result);
+    let rows=/<table|<html|<!doctype/i.test(txt)?parseBGammaHTML(txt):null;
+    const isHTML=!!rows;
+    if(!rows)rows=parsePaste(txt);
+    if(rows&&rows.length){
+      state.blocks[state.target]=rows;state.loaded[state.target]=true;
+      if(state.target==="MAU"){state.mauInfo={name:file.name||"(file)",date:isHTML?reportDate(txt):""};renderMauInfo();}
+      renderBlocks();renderResults();setStatus(true,"Đã nạp mẫu: "+(file.name||"(file)")+" — "+rows.length+" đỉnh.");
+    }
+    else setStatus(false,"Không đọc được đỉnh nào. Cần: report HTML bGamma hoặc 3 cột E | Area | σ.");
+  };
+  rd.readAsText(file);
+}
+
+/* ---------------- CẤU HÌNH: chuẩn & phông tự nạp ---------------- */
+const CFG_BLOCKS=["RGU","RGTh","RGK","PHONG"];        // các khối thuộc cấu hình (không gồm MAU)
+// nhận diện file trong thư mục theo tên
+function classifyFileName(name){
+  const n=(name||"").toLowerCase();
+  if(/(phong|phông|background|\bbg\b|bgr|empty|rong|rỗng)/.test(n))return "PHONG";
+  if(/rgth|rg-th|rg_th|\bth\b|thori/.test(n))return "RGTh";
+  if(/rgk|rg-k|rg_k|\bk40\b|kali|potassium/.test(n))return "RGK";
+  if(/rgu|rg-u|rg_u|\bu\b|urani/.test(n))return "RGU";
+  return null;
+}
+function parseTextToRows(txt){
+  let rows=/<table|<html|<!doctype/i.test(txt)?parseBGammaHTML(txt):null;
+  if(!rows||!rows.length)rows=parsePaste(txt);
+  return rows&&rows.length?rows:null;
+}
+async function readFileText(fileOrHandle){
+  const f=fileOrHandle.getFile?await fileOrHandle.getFile():fileOrHandle;
+  return await f.text();
+}
+
+// Áp một bộ blocks (chỉ các khối cấu hình) + std vào state
+function applyConfigObject(cfg,quiet){
+  let applied=[];
+  if(cfg&&cfg.blocks){
+    for(const k of CFG_BLOCKS){
+      if(Array.isArray(cfg.blocks[k])&&cfg.blocks[k].length){
+        state.blocks[k]=cfg.blocks[k].map(r=>({E:r.E,area:r.area,sig:r.sig}));
+        state.loaded[k]=true;applied.push(k);
+      }
+    }
+  }
+  if(cfg&&cfg.std){
+    for(const k of ["RGU","RGTh","RGK"]){
+      if(cfg.std[k]){
+        if(Number.isFinite(cfg.std[k].C))state.std[k].C=cfg.std[k].C;
+        if(Number.isFinite(cfg.std[k].uC))state.std[k].uC=cfg.std[k].uC;
+        if(Number.isFinite(cfg.std[k].m))state.std[k].m=cfg.std[k].m;
+      }
+    }
+    // đồng bộ ô nhập trên giao diện
+    ["RGU","RGTh","RGK"].forEach(k=>{
+      const cEl=document.getElementById("C_"+k),mEl=document.getElementById("M_"+k);
+      if(cEl)cEl.value=state.std[k].C; if(mEl)mEl.value=state.std[k].m;
+    });
+  }
+  if(cfg&&cfg.options&&typeof cfg.options.subtractBg==="boolean"){
+    state.cfg.subtractBg=cfg.options.subtractBg;
+    const cb=document.getElementById("optSubBg"); if(cb)cb.checked=state.cfg.subtractBg;
+  }
+  if(cfg&&cfg.options&&Array.isArray(cfg.options.bgPeaks)){
+    state.cfg.bgPeaks=cfg.options.bgPeaks.map(Number);
+  }
+  syncSubBgNote();
+  renderBlocks();renderResults();
+  if(!quiet)cfgStatusUpdate(applied);
+  return applied;
+}
+// Snapshot cấu hình hiện tại từ state (chỉ các khối cấu hình đã nạp)
+function snapshotConfig(){
+  const blocks={};
+  for(const k of CFG_BLOCKS){
+    if(state.loaded[k]&&(state.blocks[k]||[]).length)
+      blocks[k]=state.blocks[k].map(r=>({E:r.E,area:r.area,sig:r.sig}));
+  }
+  const std={};for(const k of ["RGU","RGTh","RGK"])std[k]={C:state.std[k].C,uC:state.std[k].uC,m:state.std[k].m};
+  return {savedAt:new Date().toISOString(),blocks,std,options:{subtractBg:state.cfg.subtractBg!==false,bgPeaks:(state.cfg.bgPeaks||[]).slice()}};
+}
+// render danh sách checkbox chọn đỉnh trừ phông
+function renderBgPeaks(){
+  const wrap=document.getElementById("bgPeaksList");if(!wrap)return;
+  const sel=new Set((state.cfg.bgPeaks||[]).map(Number));
+  wrap.innerHTML=PEAKS.map(p=>{
+    const on=sel.has(p.E);
+    return '<label class="'+(on?'on':'')+'"><input type="checkbox" data-e="'+p.E+'"'+(on?' checked':'')+'>'+p.nuc+' ('+p.E+')</label>';
+  }).join("");
+  wrap.querySelectorAll('input[data-e]').forEach(cb=>{
+    cb.addEventListener("change",e=>{
+      const E=Number(e.target.dataset.e);
+      let arr=(state.cfg.bgPeaks||[]).map(Number).filter(x=>x!==E);
+      if(e.target.checked)arr.push(E);
+      state.cfg.bgPeaks=arr;
+      renderBgPeaks();renderResults();
+      idbGet("config").then(cfg=>{if(cfg){cfg.options=cfg.options||{};cfg.options.bgPeaks=arr.slice();idbSet("config",cfg);}});
+    });
+  });
+  // mờ phần chọn đỉnh khi tắt trừ phông
+  const w=document.getElementById("bgPeaksWrap");
+  if(w)w.style.opacity=state.cfg.subtractBg!==false?"1":".45";
+}
+// đồng bộ dòng ghi chú theo trạng thái toggle
+function syncSubBgNote(){
+  const on=state.cfg.subtractBg!==false;
+  const note=document.getElementById("optSubBgNote");
+  if(note)note.textContent=on
+    ?"Đang BẬT: chỉ trừ phông ở các đỉnh chọn bên dưới (mặc định K-40 & Tl-208). Tắt nếu phổ đã trừ phông sẵn hoặc muốn dùng diện tích thô."
+    :"Đang TẮT: dùng diện tích thô của chuẩn & mẫu, KHÔNG trừ phông ở mọi đỉnh.";
+  renderBgPeaks();
+}
+function cfgMsg(ok,msg){const el=document.getElementById("cfgMsg");if(!el)return;el.className="cfg-msg "+(ok?"ok":"err");el.textContent=msg;}
+function cfgStatusUpdate(applied){
+  const el=document.getElementById("cfgStatus");if(!el)return;
+  const have=CFG_BLOCKS.filter(k=>state.loaded[k]);
+  if(have.length){el.className="cfg-stat on";el.textContent="✓ Đã nạp cấu hình: "+have.join(" · ")+" — chỉ cần thả file MẪU.";}
+  else{el.className="cfg-stat";el.textContent="Đang dùng dữ liệu mặc định (demo)";}
+}
+
+// Lưu / nạp cấu hình trong IndexedDB
+async function saveConfigSnapshot(){
+  const cfg=snapshotConfig();
+  if(!Object.keys(cfg.blocks).length){cfgMsg(false,"Chưa có khối chuẩn/phông nào được nạp để lưu. Hãy thả/dán RGU, RGTh, RGK, PHÔNG trước.");return;}
+  await idbSet("config",cfg);
+  cfgStatusUpdate();
+  cfgMsg(true,"Đã lưu cấu hình ("+Object.keys(cfg.blocks).join(", ")+") — tự nạp từ lần mở sau.");
+}
+async function loadSavedConfig(quiet){
+  const cfg=await idbGet("config");
+  if(!cfg||!cfg.blocks||!Object.keys(cfg.blocks).length){if(!quiet)cfgMsg(false,"Chưa có cấu hình đã lưu trong máy.");return false;}
+  const applied=applyConfigObject(cfg,true);cfgStatusUpdate();
+  if(!quiet)cfgMsg(true,"Đã nạp cấu hình đã lưu: "+applied.join(", ")+".");
+  return applied.length>0;
+}
+async function clearSavedConfig(){
+  if(!confirm("Xoá cấu hình chuẩn & phông đã lưu trên máy? (Mẫu đang nạp và CSDL không bị ảnh hưởng)"))return;
+  await idbSet("config",undefined);
+  await idbSet("cfgDirHandle",undefined);
+  state.cfgDir=null;renderCfgDirBar();
+  cfgStatusUpdate();cfgMsg(true,"Đã xoá cấu hình đã lưu.");
+}
+function exportConfig(){
+  const cfg=snapshotConfig();
+  if(!Object.keys(cfg.blocks).length){cfgMsg(false,"Chưa có cấu hình để xuất.");return;}
+  saveAs("NORM_cau_hinh.json",JSON.stringify(cfg,null,2),"application/json",{desc:"Cấu hình NORM (JSON)",ext:".json"});
+}
+function importConfig(file){
+  const rd=new FileReader();
+  rd.onload=async()=>{try{
+    const cfg=JSON.parse(String(rd.result));
+    const applied=applyConfigObject(cfg,true);cfgStatusUpdate();
+    await idbSet("config",cfg);
+    cfgMsg(true,"Đã nạp & lưu cấu hình từ file: "+applied.join(", ")+".");
+  }catch(e){cfgMsg(false,"File cấu hình không hợp lệ.");}};
+  rd.readAsText(file);
+}
+
+// --- Thư mục cấu hình (File System Access API) ---
+async function linkCfgDir(){
+  if(!("showDirectoryPicker" in window)){cfgMsg(false,"Trình duyệt chưa hỗ trợ chọn thư mục (cần Chrome/Edge). Dùng cách Lưu cấu hình hiện tại / Nạp .json.");return;}
+  try{
+    const dir=await window.showDirectoryPicker();
+    if((await dir.queryPermission({mode:"read"}))!=="granted"&&(await dir.requestPermission({mode:"read"}))!=="granted"){cfgMsg(false,"Chưa được cấp quyền đọc thư mục.");return;}
+    state.cfgDir=dir;
+    try{await idbSet("cfgDirHandle",dir);}catch(e){}
+    renderCfgDirBar();
+    await loadFromCfgDir();
+  }catch(e){if(e&&e.name==="AbortError")return;cfgMsg(false,"Không liên kết được thư mục.");}
+}
+async function loadFromCfgDir(){
+  const dir=state.cfgDir;
+  if(!dir){cfgMsg(false,"Chưa liên kết thư mục cấu hình.");return;}
+  if((await dir.queryPermission({mode:"read"}))!=="granted"&&(await dir.requestPermission({mode:"read"}))!=="granted"){cfgMsg(false,"Cần cấp lại quyền đọc thư mục — bấm Liên kết thư mục.");return;}
+  const found={};const errs=[];
+  try{
+    for await(const [name,handle] of dir.entries()){
+      if(handle.kind!=="file")continue;
+      if(!/\.(html?|txt|csv|tsv)$/i.test(name))continue;
+      const k=classifyFileName(name);
+      if(!k||found[k])continue;            // mỗi khối lấy file khớp đầu tiên
+      try{
+        const txt=await readFileText(handle);
+        const rows=parseTextToRows(txt);
+        if(rows){state.blocks[k]=rows;state.loaded[k]=true;found[k]=name;}
+        else errs.push(name+" (không đọc được đỉnh)");
+      }catch(e){errs.push(name+" (lỗi đọc)");}
+    }
+  }catch(e){cfgMsg(false,"Lỗi đọc thư mục: "+(e.message||e));return;}
+  const got=Object.keys(found);
+  if(got.length){
+    // lưu luôn snapshot để các phiên sau không cần quyền thư mục
+    try{await idbSet("config",snapshotConfig());}catch(e){}
+    renderBlocks();renderResults();cfgStatusUpdate();renderCfgDirBar();
+    const miss=CFG_BLOCKS.filter(k=>!found[k]);
+    cfgMsg(true,"Đã nạp từ thư mục: "+got.map(k=>k+" ← "+found[k]).join(" · ")+
+      (miss.length?(" · thiếu: "+miss.join(", ")):"")+(errs.length?(" · bỏ qua: "+errs.join("; ")):"")+".");
+  }else{
+    cfgMsg(false,"Không tìm thấy file chuẩn/phông hợp lệ trong thư mục. Hãy đặt tên file chứa RGU/RGTh/RGK/PHONG.");
+  }
+}
+function renderCfgDirBar(){
+  const el=document.getElementById("cfgDirBar");if(!el)return;
+  if(!("showDirectoryPicker" in window)){el.innerHTML='<span class="warn">Trình duyệt này không hỗ trợ liên kết thư mục — hãy dùng “Lưu cấu hình hiện tại” hoặc nạp .json.</span>';return;}
+  if(state.cfgDir){el.innerHTML='<span class="on">📁 Đã liên kết thư mục: <b>'+esc(state.cfgDir.name||"(thư mục)")+'</b></span>';}
+  else{el.innerHTML='<span>Chưa liên kết thư mục.</span>';}
+}
+
+/* ---------------- Mở quy trình (PDF trong thư mục cấu hình) ---------------- */
+// điểm ưu tiên tên file PDF cho "quy trình đo NORM"
+function guideScore(name){
+  const n=(name||"").toLowerCase();
+  let s=0;
+  if(/sop/.test(n))s+=5;
+  if(/quy[\s_-]*tr[iì]nh|quytrinh/.test(n))s+=5;
+  if(/h[uư][oơ]ng[\s_-]*d[aâ]n|huongdan|guide|manual/.test(n))s+=3;
+  if(/norm/.test(n))s+=3;
+  if(/so[\s_-]*sanh|sosanh/.test(n))s+=2;
+  if(/ho[aạ]t[\s_-]*[dđ][oộ]/.test(n))s+=2;
+  return s;
+}
+async function openGuidePDF(){
+  if(!("showDirectoryPicker" in window)){
+    cfgMsg(false,"Trình duyệt này không hỗ trợ đọc thư mục. Hãy mở file PDF quy trình thủ công.");
+    return;
+  }
+  let dir=state.cfgDir;
+  if(!dir){
+    cfgMsg(false,"Chưa liên kết thư mục cấu hình. Mở mục ⚙ Cấu hình → “Liên kết thư mục…” (nơi chứa cả PDF quy trình).");
+    document.getElementById("cfgPanel").classList.remove("hidden");
+    document.getElementById("cfgChevron").textContent="▾";
+    return;
+  }
+  try{
+    if((await dir.queryPermission({mode:"read"}))!=="granted"&&(await dir.requestPermission({mode:"read"}))!=="granted"){
+      cfgMsg(false,"Cần cấp lại quyền đọc thư mục — bấm “Liên kết thư mục” trong mục Cấu hình.");return;
+    }
+    let best=null,bestScore=-1,pdfCount=0;
+    for await(const [name,handle] of dir.entries()){
+      if(handle.kind!=="file"||!/\.pdf$/i.test(name))continue;
+      pdfCount++;
+      const sc=guideScore(name);
+      if(sc>bestScore){bestScore=sc;best={name,handle};}
+    }
+    if(!best){cfgMsg(false,"Không thấy file PDF nào trong thư mục cấu hình. Hãy đặt file quy trình (.pdf) vào cùng thư mục.");return;}
+    // nếu nhiều PDF nhưng không file nào khớp từ khoá → hỏi cho chắc
+    if(bestScore<=0&&pdfCount>1){
+      if(!confirm("Không nhận ra tên file quy trình rõ ràng. Mở “"+best.name+"” chứ?"))return;
+    }
+    const file=await best.handle.getFile();
+    const url=URL.createObjectURL(file);
+    const win=window.open(url,"_blank");
+    if(!win)cfgMsg(false,"Trình duyệt chặn cửa sổ bật lên. Hãy cho phép pop-up rồi bấm lại.");
+    else cfgMsg(true,"Đang mở quy trình: "+best.name+".");
+    setTimeout(()=>URL.revokeObjectURL(url),60000);
+  }catch(e){cfgMsg(false,"Không mở được PDF: "+(e.message||e));}
+}
+
+/* ---------------- khởi tạo & sự kiện ---------------- */
+function init(){
+  // select khối
+  // Mọi file nạp ở khung này luôn vào khối MẪU (chuẩn & phông quản lý ở mục Cấu hình)
+  state.target="MAU";
+  const tgt=document.getElementById("target");
+  tgt.innerHTML='<option value="MAU">MẪU đo</option>';
+  tgt.value="MAU";
+
+  // báo cáo: gán giá trị mặc định
+  document.getElementById("name").value=state.report.name;
+  document.getElementById("date").value=state.report.date;
+  document.getElementById("matrix").value=state.report.matrix;
+  ["customer","name","operator","date","matrix"].forEach(k=>{
+    document.getElementById(k).addEventListener("input",e=>{state.report[k]=e.target.value;});
+  });
+
+  // tham số mẫu
+  [["m","m"],["t","t"],["tol","tol"]].forEach(([id,key])=>{
+    document.getElementById(id).addEventListener("input",e=>{state.sample[key]=parseFloat(e.target.value)||0;renderResults();});
+  });
+
+  // chuẩn IAEA (sửa được)
+  ["RGU","RGTh","RGK"].forEach(k=>{
+    const cEl=document.getElementById("C_"+k), mEl=document.getElementById("M_"+k);
+    cEl.value=state.std[k].C; mEl.value=state.std[k].m;
+    cEl.addEventListener("input",e=>{state.std[k].C=parseFloat(e.target.value)||0;renderResults();});
+    mEl.addEventListener("input",e=>{state.std[k].m=parseFloat(e.target.value)||0;renderResults();});
+  });
+
+  // dropzone
+  const dz=document.getElementById("drop"),fi=document.getElementById("fileInput");
+  dz.addEventListener("click",()=>fi.click());
+  dz.addEventListener("dragover",e=>{e.preventDefault();dz.classList.add("drag");});
+  dz.addEventListener("dragleave",()=>dz.classList.remove("drag"));
+  dz.addEventListener("drop",e=>{e.preventDefault();dz.classList.remove("drag");if(e.dataTransfer.files[0])ingestFile(e.dataTransfer.files[0]);});
+  fi.addEventListener("change",e=>{if(e.target.files[0])ingestFile(e.target.files[0]);e.target.value="";});
+
+  // lưu / xuất
+  document.getElementById("btnSave").addEventListener("click",saveRecord);
+  document.getElementById("btnReport").addEventListener("click",()=>saveAs("BaoCao_NORM_"+safeName()+".html",buildReportHTML(),"text/html",{desc:"Báo cáo (HTML)",ext:".html"}));
+  document.getElementById("btnTsv").addEventListener("click",()=>saveAs("SoLieu_NORM_"+safeName()+".txt",buildSampleTSV(),"text/tab-separated-values",{desc:"Số liệu (TSV)",ext:".txt",bom:true}));
+
+  // CSDL
+  document.getElementById("btnDbJson").addEventListener("click",exportDBjson);
+  const di=document.getElementById("dbImport");
+  document.getElementById("btnDbOpen").addEventListener("click",()=>di.click());
+  di.addEventListener("change",e=>{if(e.target.files[0])importDB(e.target.files[0]);e.target.value="";});
+  document.getElementById("btnDbTsv").addEventListener("click",exportDBtsv);
+  document.getElementById("btnDbClear").addEventListener("click",clearDB);
+  document.getElementById("btnDbReload").addEventListener("click",reloadDB);
+  document.getElementById("dbSearch").addEventListener("input",e=>{state.dbQuery=e.target.value;renderDB();});
+  document.getElementById("dbBody").addEventListener("click",e=>{
+    const del=e.target.closest(".xdel");
+    if(del){e.stopPropagation();deleteRecord(Number(del.dataset.id));return;}
+    const row=e.target.closest("tr[data-view]");
+    if(row)openRecord(Number(row.dataset.view));
+  });
+  document.getElementById("mClose").addEventListener("click",closeModal);
+  document.getElementById("overlay").addEventListener("click",e=>{if(e.target.id==="overlay")closeModal();});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal();});
+  document.getElementById("fileBar").addEventListener("click",e=>{
+    const b=e.target.closest("[data-act]");if(!b)return;
+    const a=b.dataset.act;
+    if(a==="link")linkFile();else if(a==="unlink")unlinkFile();else if(a==="reconnect")reconnectFile();
+  });
+
+  // ---- Cấu hình ----
+  document.getElementById("btnCfgToggle").addEventListener("click",()=>{
+    const p=document.getElementById("cfgPanel");p.classList.toggle("hidden");
+    document.getElementById("cfgChevron").textContent=p.classList.contains("hidden")?"▸":"▾";
+  });
+  document.getElementById("btnGuide").addEventListener("click",openGuidePDF);
+  document.getElementById("btnCfgDirLink").addEventListener("click",linkCfgDir);
+  document.getElementById("btnCfgDirReload").addEventListener("click",loadFromCfgDir);
+  document.getElementById("btnCfgSaveSnap").addEventListener("click",saveConfigSnapshot);
+  document.getElementById("btnCfgApply").addEventListener("click",()=>loadSavedConfig(false));
+  document.getElementById("btnCfgClear").addEventListener("click",clearSavedConfig);
+  document.getElementById("btnCfgExport").addEventListener("click",exportConfig);
+  const cfi=document.getElementById("cfgImportFile");
+  document.getElementById("btnCfgImport").addEventListener("click",()=>cfi.click());
+  cfi.addEventListener("change",e=>{if(e.target.files[0])importConfig(e.target.files[0]);e.target.value="";});
+  renderCfgDirBar();
+  // toggle trừ phông
+  document.getElementById("optSubBg").addEventListener("change",e=>{
+    state.cfg.subtractBg=e.target.checked;
+    syncSubBgNote();
+    renderResults();
+    idbGet("config").then(cfg=>{ if(cfg){ cfg.options=cfg.options||{}; cfg.options.subtractBg=state.cfg.subtractBg; idbSet("config",cfg); } });
+    setStatus(true, state.cfg.subtractBg?"Đã BẬT trừ phông cho mọi phổ.":"Đã TẮT trừ phông — dùng diện tích thô.");
+  });
+
+  // render lần đầu
+  document.getElementById("optSubBg").checked=state.cfg.subtractBg!==false; syncSubBgNote();
+  renderBlocks();renderResults();renderDB();renderFileBar();renderMauInfo();
+
+  // tự nạp cấu hình chuẩn & phông đã lưu (nếu có)
+  loadSavedConfig(true).then(ok=>{ if(!ok) cfgStatusUpdate(); });
+  // khôi phục thư mục cấu hình đã liên kết
+  if("showDirectoryPicker" in window)idbGet("cfgDirHandle").then(async h=>{
+    if(!h)return;
+    state.cfgDir=h;renderCfgDirBar();
+  });
+
+  // nạp CSDL đã lưu trên máy
+  idbGet("records").then(recs=>{
+    if(Array.isArray(recs)){state.db=recs;renderDB();}
+    if(state.db.length)setStatus(true,"Đã tải "+state.db.length+" bản ghi từ CSDL trên máy.");
+  });
+
+  // khôi phục file CSDL đã liên kết (nếu có)
+  if(FS_OK)idbGet("fileHandle").then(async h=>{
+    if(!h)return;
+    state.fileHandle=h;state.fileName=h.name||"NORM_CSDL.json";
+    try{
+      if((await h.queryPermission({mode:"readwrite"}))==="granted"){
+        const data=await readHandle(h);if(Array.isArray(data))state.db=data;
+        state.fileReady=true;renderDB();
+        setStatus(true,"Đã nạp "+state.db.length+" bản ghi từ file: "+state.fileName+".");
+      }else{
+        setStatus(true,"Có file CSDL đã liên kết ("+state.fileName+") — bấm “Kết nối lại” để mở.");
+      }
+    }catch(e){}
+    renderFileBar();
+  });
+}
+document.addEventListener("DOMContentLoaded",init);
+</script>
+
+
+
+<nav class="mobile-bottom-nav" aria-label="Điều hướng nhanh">
+  <button type="button" data-scroll="#drop"><span class="ico">📥</span><span>Nạp mẫu</span></button>
+  <button type="button" data-scroll="#summary"><span class="ico">📊</span><span>Kết quả</span></button>
+  <button type="button" data-scroll="#peakTable"><span class="ico">🧮</span><span>Chi tiết</span></button>
+  <button type="button" data-scroll="#dbBody"><span class="ico">🗂️</span><span>Lịch sử</span></button>
+  <button type="button" data-scroll="#cfgBar"><span class="ico">⚙️</span><span>Cấu hình</span></button>
+</nav>
+<script>
+(function(){
+  'use strict';
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function(){
+      navigator.serviceWorker.register('./sw.js').catch(function(err){ console.warn('SW registration failed', err); });
+    });
+  }
+  var deferredPrompt=null;
+  var installBar=document.getElementById('mobileInstall');
+  var installBtn=document.getElementById('btnInstallPwa');
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault(); deferredPrompt=e;
+    if(installBar) installBar.classList.add('show');
+  });
+  if(installBtn){
+    installBtn.addEventListener('click', async function(){
+      if(!deferredPrompt){
+        alert('Nếu chưa thấy hộp thoại cài đặt, hãy mở trang bằng Chrome Android từ địa chỉ GitHub Pages HTTPS, sau đó chọn menu ⋮ → Add to Home screen / Install app.');
+        return;
+      }
+      deferredPrompt.prompt();
+      try{ await deferredPrompt.userChoice; }catch(e){}
+      deferredPrompt=null;
+      if(installBar) installBar.classList.remove('show');
+    });
+  }
+  var navBtns=[].slice.call(document.querySelectorAll('.mobile-bottom-nav button[data-scroll]'));
+  navBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var el=document.querySelector(btn.getAttribute('data-scroll'));
+      if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+      navBtns.forEach(function(b){b.classList.remove('active')}); btn.classList.add('active');
+    });
+  });
+})();
+</script>
+
+</body></html>
